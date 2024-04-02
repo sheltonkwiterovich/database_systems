@@ -1,0 +1,740 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: Mar 25, 2024 at 12:41 PM
+-- Server version: 10.6.16-MariaDB-0ubuntu0.22.04.1
+-- PHP Version: 8.1.2-1ubuntu2.14
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `vsk9hw`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Added_to`
+--
+
+CREATE TABLE `Added_to` (
+  `book_id` int(11) DEFAULT NULL,
+  `cart_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Added_to`
+--
+
+INSERT INTO `Added_to` (`book_id`, `cart_id`) VALUES
+(1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Audiobook`
+--
+
+CREATE TABLE `Audiobook` (
+  `book_id` int(11) NOT NULL,
+  `book_name` varchar(255) DEFAULT NULL,
+  `book_author` varchar(100) DEFAULT NULL,
+  `book_narrator` varchar(100) DEFAULT NULL,
+  `categories` varchar(255) DEFAULT NULL,
+  `rating` float DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `listening_time` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Audiobook`
+--
+
+INSERT INTO `Audiobook` (`book_id`, `book_name`, `book_author`, `book_narrator`, `categories`, `rating`, `price`, `listening_time`) VALUES
+(1, 'Bamboozled by Jesus', 'Yvonne Orji', 'Yvonne Orji', 'Biographies & Memoirs', 5, '29.65', 391),
+(4, 'The Devil May Dance', 'Jake Tapper', 'Rob Shapiro', 'Mystery, Thriller & Suspense', 4.5, '29.65', 612),
+(5, 'Shadow Storm', 'Christine Feehan', 'Jim Frangione', 'Mystery, Thriller & Suspense', 4.8, '31.49', 822),
+(8, 'Dream Spinner', 'Kristen Ashley', 'Susannah Jones', 'Romance', 4.6, '29.65', 765),
+(9, 'Fortune Funhouse', 'Jana DeLeon', 'Cassandra Campbell', 'Mystery, Thriller & Suspense', 4.9, '19.95', 561),
+(10, 'Godblight', 'Guy Haley', 'John Banks', 'Science Fiction & Fantasy', 4.7, '32.71', 782),
+(11, 'The Missing Sister', 'Lucinda Riley', 'Caroline Lennon', 'Literature & Fiction', 4.3, '32.71', 1428),
+(12, 'The Bomber Mafia', 'Malcolm Gladwell', 'Malcolm Gladwell', 'History', 4.7, '22.40', 314),
+(13, 'Yearbook', 'Seth Rogen', 'Seth Rogen', 'Biographies & Memoirs', 4.8, '28.00', 373),
+(14, 'Unsettled', 'Steven E. Koonin', 'Jay Aaseng', 'Politics & Social Sciences', 4.9, '15.40', 434),
+(15, 'Legacy', 'Nora Roberts', 'January LaVoy', 'Literature & Fiction', 4.8, '31.18', 897),
+(16, 'How to Do the Work', 'Dr. Nicole LePera', 'Courtney Patterson', 'Health & Wellness', 4.5, '30.79', 582),
+(19, 'Greenlights', 'Matthew McConaughey', 'Matthew McConaughey', 'Biographies & Memoirs', 4.9, '28.00', 402),
+(20, 'Something Wicked This Way Comes', 'Ray Bradbury', 'Christian Rummel', 'Literature & Fiction', 4.2, '19.95', 545),
+(21, 'The Saboteurs', 'Clive Cussler', 'Scott Brick', 'Literature & Fiction', 4.8, '31.50', 674),
+(22, 'What Happened to You?', 'Oprah Winfrey', 'Bruce D. Perry', 'Health & Wellness', 4.9, '20.99', 507),
+(23, 'The Last Thing He Told Me', 'Laura Dave', 'Rebecca Lowman', 'Literature & Fiction', 4.5, '22.67', 529),
+(24, 'Chasing Fire', 'Nora Roberts', 'Rebecca Lowman', 'Literature & Fiction', 4.4, '29.99', 910),
+(25, 'Project Hail Mary', 'Andy Weir', 'Ray Porter', 'Science Fiction & Fantasy', 4.9, '29.95', 970),
+(26, 'The Dungeon Anarchist\'s Cookbook', 'Matt Dinniman', 'Jeff Hays The Critical Drinker', 'Literature & Fiction', 4.9, '24.95', 1014),
+(27, 'The Enemy Within', 'David Horowitz', 'Rick Adamson', 'Politics & Social Sciences', 4.9, '17.49', 467),
+(28, 'Amazon Unbound', 'Brad Stone', 'Pete Larkin', 'Biographies & Memoirs', 4.5, '28.34', 993),
+(29, 'The Four Agreements', 'don Miguel Ruiz', 'Peter Coyote', 'Relationships, Parenting & Personal Development', 4.7, '14.95', 151),
+(30, 'Sapiens', 'Yuval Noah Harari', 'Derek Perkins', 'Politics & Social Sciences', 4.7, '34.22', 917),
+(31, 'Never Split the Difference', 'Chris Voss', 'Michael Kramer', 'Business & Careers', 4.8, '27.37', 487),
+(32, 'Atomic Habits', 'James Clear', 'James Clear', 'Business & Careers', 4.8, '28.00', 335),
+(33, 'The Devil\'s Highway', 'Luis Alberto Urrea', 'Luis Alberto Urrea', 'History', 4.5, '22.80', 533),
+(34, 'Animal Farm', 'George Orwell', 'Benjamin May', 'Literature & Fiction', 4.7, '0.94', 205),
+(35, 'The Subtle Art of Not Giving a F*ck', 'Mark Manson', 'Roger Wayne', 'Relationships, Parenting & Personal Development', 4.5, '23.95', 317),
+(36, 'Captivate', 'Vanessa Van Edwards', 'Vanessa Van Edwards', 'Business & Careers', 4.6, '28.00', 448),
+(37, 'The Marriage', 'K. L. Slater', 'Lucy Price-Lewis', 'Mystery, Thriller & Suspense', 4.2, '16.35', 547),
+(38, 'Howl\'s Moving Castle', 'Diana Wynne Jones', 'Jenny Sterlin', 'Children\'s Audiobooks', 4.7, '31.47', 514),
+(39, 'Killers of the Flower Moon', 'David Grann', 'Will Patton', 'Biographies & Memoirs', 4.4, '27.95', 544),
+(40, 'A Land So Strange', 'Andres Resendez', 'Jonathan Davis', 'Biographies & Memoirs', 4.6, '19.95', 433),
+(41, 'Rich Dad Poor Dad', 'Robert T. Kiyosaki', 'Tim Wheeler', 'Money & Finance', 4.8, '24.99', 369),
+(42, 'Crying in H Mart', 'Michelle Zauner', 'Michelle Zauner', 'Biographies & Memoirs', 4.9, '28.00', 443),
+(43, 'Shadow and Bone', 'Leigh Bardugo', 'Lauren Fortgang', 'Teen', 4.4, '19.95', 561),
+(45, 'How to Win Friends & Influence People', 'Dale Carnegie', 'Andrew MacMillan', 'Relationships, Parenting & Personal Development', 4.7, '31.93', 435),
+(46, 'The Plot', 'Jean Hanff Korelitz', 'Kirby Heyborne', 'Mystery, Thriller & Suspense', 4, '27.99', 643),
+(47, 'Never Go Back', 'Lee Child', 'Dick Hill', 'Mystery, Thriller & Suspense', 4.4, '31.50', 824),
+(48, 'Freedom', 'Sebastian Junger', 'Sebastian Junger', 'Biographies & Memoirs', 4.7, '18.89', 186),
+(49, 'Children of Ash and Elm', 'Neil Price', 'Samuel Roukin', 'History', 4.7, '34.99', 1045),
+(50, 'Bloodline', 'Will Wight', 'Travis Baldree', 'Science Fiction & Fantasy', 4.9, '24.95', 672),
+(51, 'The Hope We Hold', 'Jeremy Vuolo', 'Jeremy Vuolo', 'Biographies & Memoirs', 4.8, '29.65', 368),
+(53, 'Dark Imperium', 'Guy Haley', 'John Banks', 'Science Fiction & Fantasy', 5, '32.71', 713),
+(54, 'The Body Keeps the Score', 'Bessel A. van der Kolk', 'Sean Pratt', 'Health & Wellness', 4.9, '35.00', 975),
+(55, 'Born a Crime', 'Trevor Noah', 'Trevor Noah', 'Arts & Entertainment', 4.9, '24.95', 524),
+(56, 'Great Circle', 'Maggie Shipstead', 'Cassandra Campbell', 'Literature & Fiction', 4.6, '42.00', 1516),
+(57, 'Untamed', 'Glennon Doyle', 'Glennon Doyle', 'Biographies & Memoirs', 4.7, '31.50', 502),
+(58, 'The Invisible Life of Addie LaRue', 'V. E. Schwab', 'Julia Whelan', 'Science Fiction & Fantasy', 4.6, '46.89', 1030),
+(59, 'The Vanishing Half', 'Brit Bennett', 'Shayna Small', 'Literature & Fiction', 4.5, '31.50', 694),
+(60, 'Brat', 'Andrew McCarthy', 'Andrew McCarthy', 'Biographies & Memoirs', 4.4, '29.65', 295),
+(61, 'Sooley', 'John Grisham', 'Dion Graham', 'Literature & Fiction', 4.7, '31.50', 627),
+(62, 'Cleaning Up Your Mental Mess', 'Dr. Caroline Leaf', 'Caroline Leaf', 'Health & Wellness', 4.4, '24.49', 484),
+(63, 'The Mind Illuminated', 'Culadasa John Yates PhD', 'Sean Runnette', 'Health & Wellness', 4.6, '31.49', 965),
+(64, 'Carl\'s Doomsday Scenario', 'Matt Dinniman', 'Jeff Hays', 'Literature & Fiction', 4.9, '24.95', 688),
+(65, 'Zero Fail', 'Carol Leonnig', 'Maggi-Meg Reed', 'Politics & Social Sciences', 4.6, '38.50', 1226),
+(66, 'Boundary Boss', 'Terri Cole MSW LCSW', 'Terri Cole MSW LCSW', 'Relationships, Parenting & Personal Development', 5, '14.69', 474),
+(67, 'The Fifth Realm', 'Michael Chatfield', 'Todd Menesses', 'Teen', 4.7, '29.95', 1588),
+(68, 'The Dalai Lama\'s Cat + The Dalai Lama\'s Cat: Guided Meditations', 'David Michie', 'David Michie', 'Literature & Fiction', 4.7, '29.84', 434),
+(69, 'The Midnight Library', 'Matt Haig', 'Carey Mulligan', 'Science Fiction & Fantasy', 4.6, '28.00', 530),
+(70, 'The Never Army', 'T. Ellery Hodges', 'Steven Barnett', 'Teen', 4.9, '29.95', 1865),
+(72, 'Extreme Ownership', 'Jocko Willink', 'Jocko Willink', 'Business & Careers', 4.8, '27.99', 573),
+(73, 'Dune', 'Frank Herbert', 'Scott Brick', 'Science Fiction & Fantasy', 4.6, '47.93', 1262),
+(74, 'Factfulness', 'Hans Rosling', 'Richard Harries', 'Health & Wellness', 4.6, '24.49', 531),
+(75, 'The Girl Who Was Taken', 'Charlie Donlea', 'Nina Alvamar', 'Mystery, Thriller & Suspense', 4.3, '27.99', 649),
+(76, 'Building a StoryBrand', 'Donald Miller', 'Donald Miller', 'Business & Careers', 4.8, '22.81', 296),
+(77, 'The Charisma Myth', 'Olivia Fox Cabane', 'Lisa Cordileione', 'Business & Careers', 4.3, '24.49', 500),
+(78, 'Redeeming Love', 'Francine Rivers', 'Kate Forbes', 'Literature & Fiction', 4.8, '39.87', 1037),
+(79, 'Breaking the News', 'Alex Marlow', 'Alex Marlow', 'Politics & Social Sciences', 4.9, '22.67', 634),
+(80, 'Hillbilly Elegy', 'J. D. Vance', 'J. D. Vance', 'Politics & Social Sciences', 4.5, '25.09', 409),
+(82, 'The Untethered Soul', 'Michael A. Singer', 'Peter Berkrot', 'Health & Wellness', 4.7, '24.49', 371),
+(83, 'Thinking, Fast and Slow', 'Daniel Kahneman', 'Patrick Egan', 'Business & Careers', 4.4, '35.00', 1202),
+(84, 'The Seven Husbands of Evelyn Hugo', 'Taylor Jenkins Reid', 'Alma Cuervo', 'LGBTQ+', 4.6, '22.67', 730),
+(85, 'The Comfort Crisis', 'Michael Easter', 'Michael Easter', 'Health & Wellness', 4.9, '28.00', 532),
+(87, 'Alpha Male Bible', 'Sean Wayne', 'Perdens Studio', 'Health & Wellness', 4.1, '24.95', 721),
+(88, 'Behold a Pale Horse', 'Milton William Cooper', 'Milton William Cooper', 'Religion & Spirituality', 4.7, '6.97', 174),
+(89, 'Raising Good Humans', 'Hunter Clarke-Fields MSAE', 'Jennifer Gilmour', 'Relationships, Parenting & Personal Development', 4.7, '13.27', 337),
+(91, 'The Handmaid\'s Tale: Special Edition', 'Margaret Atwood', 'Claire Danes', 'Literature & Fiction', 4.5, '29.95', 726),
+(92, 'People We Meet on Vacation', 'Emily Henry', 'Julia Whelan', 'Literature & Fiction', 4.5, '28.00', 646),
+(93, 'The Rose Code', 'Kate Quinn', 'Saskia Maarleveld', 'Literature & Fiction', 4.8, '34.22', 940),
+(94, 'Caste (Oprah\'s Book Club)', 'Isabel Wilkerson', 'Robin Miles', 'Politics & Social Sciences', 4.8, '31.50', 866),
+(95, 'The Richest Man in Babylon', 'George S. Clason', 'Grover Gardner', 'Business & Careers', 4.7, '14.95', 244),
+(96, 'The Torch That Ignites the Stars', 'Andrew Rowe', 'Nick Podehl', 'Science Fiction & Fantasy', 4.7, '44.99', 1041),
+(97, 'Empire of the Summer Moon', 'S. C. Gwynne', 'David Drummond', 'History', 4.7, '22.67', 909),
+(98, 'Is Everyone Hanging Out Without Me? (And Other Concerns)', 'Mindy Kaling', 'Mindy Kaling', 'Arts & Entertainment', 4.3, '21.00', 277),
+(99, 'Grit', 'Angela Duckworth', 'Angela Duckworth', 'Business & Careers', 4.7, '20.99', 562),
+(100, 'Good to Great', 'Jim Collins', 'Jim Collins', 'Business & Careers', 4.5, '36.50', 601),
+(101, '21st Birthday', 'James Patterson', 'January LaVoy', 'Mystery, Thriller & Suspense', 4.6, '30.79', 530),
+(102, 'Braiding Sweetgrass', 'Robin Wall Kimmerer', 'Robin Wall Kimmerer', 'History', 4.8, '34.99', 1004),
+(103, 'Ruin and Rising', 'Leigh Bardugo', 'Lauren Fortgang', 'Teen', 4.6, '24.95', 657),
+(104, 'Wiseguy', 'Nicholas Pileggi', 'Ari Fliakos', 'Biographies & Memoirs', 4.8, '22.67', 495),
+(105, 'Can\'t Hurt Me', 'David Goggins', 'David Goggins', 'Relationships, Parenting & Personal Development', 4.9, '24.95', 817),
+(106, 'The Push', 'Ashley Audrain', 'Marin Ireland', 'Literature & Fiction', 4.5, '28.00', 518),
+(107, 'Dungeon Walkers 1', 'Daniel Schinhofen', 'Travis Baldree', 'Science Fiction & Fantasy', 4.5, '24.95', 682),
+(108, 'The Anthropocene Reviewed', 'John Green', 'John Green', 'Literature & Fiction', 4.9, '28.00', 603),
+(109, 'Unfu*k Yourself', 'Gary John Bishop', 'Gary John Bishop', 'Relationships, Parenting & Personal Development', 4.6, '20.52', 204),
+(110, 'The Fellowship of the Ring', 'J. R. R. Tolkien', 'Rob Inglis', 'Literature & Fiction', 4.8, '38.49', 1147),
+(111, 'State of Emergency', 'Tamika D. Mallory', 'Tamika D. Mallory', 'Biographies & Memoirs', 4.9, '17.00', 398),
+(112, 'The Intelligent Investor Rev Ed.', 'Benjamin Graham', 'Luke Daniels', 'Money & Finance', 4.6, '42.20', 1068),
+(113, 'Boundaries, Updated and Expanded Edition', 'John Townsend', 'Henry O. Arnold', 'Relationships, Parenting & Personal Development', 4.6, '30.79', 678),
+(114, 'I Want to Be Where the Normal People Are', 'Rachel Bloom', 'Rachel Bloom', 'Biographies & Memoirs', 4.8, '29.65', 291),
+(115, 'Herald of Shalia 3', 'Tamryn Tamer', 'Amber Lee Connors', 'Science Fiction & Fantasy', 4.9, '24.95', 746),
+(116, 'Ten Lessons for a Post-Pandemic World', 'Fareed Zakaria', 'Fareed Zakaria', 'Politics & Social Sciences', 4.7, '22.67', 444),
+(117, 'The Total Money Makeover', 'Dave Ramsey', 'Dave Ramsey', 'Business & Careers', 4.7, '20.52', 221),
+(118, 'The 4-Hour Workweek: Escape 9-5, Live Anywhere, and Join the New Rich (Expanded and Updated)', 'Timothy Ferriss', 'Ray Porter', 'Business & Careers', 4.5, '23.07', 781),
+(119, 'A Thousand Ships', 'Natalie Haynes', 'Natalie Haynes', 'Literature & Fiction', 4.7, '27.37', 514),
+(120, 'Humankind', 'Rutger Bregman', 'Rutger Bregman', 'Health & Wellness', 4.8, '29.65', 697),
+(121, 'Your Brain at Work, Revised and Updated', 'David Rock', 'Roger Wayne', 'Business & Careers', 4.9, '30.79', 564),
+(122, 'Killing the Mob', 'Bill O\'Reilly', 'Robert Petkoff', 'Biographies & Memoirs', 4.8, '27.99', 605),
+(123, '48 Laws of Power', 'Robert Greene', 'Richard Poe', 'Politics & Social Sciences', 4.6, '24.49', 1386),
+(124, 'The Song of Achilles', 'Madeline Miller', 'Frazer Douglas', 'Literature & Fiction', 4.6, '30.79', 675),
+(125, 'The Truth About Covid-19', 'Dr. Joseph Mercola', 'Nolan Chase', 'Health & Wellness', 4.9, '19.95', 475),
+(126, 'The Underground Railroad (Television Tie-in)', 'Colson Whitehead', 'Bahni Turpin', 'Literature & Fiction', 4.4, '28.00', 643),
+(127, 'Faucian Bargain', 'Steve Deace', 'Aaron McIntire', 'Politics & Social Sciences', 4.9, '6.95', 176),
+(128, 'The Happiness Project', 'Gretchen Rubin', 'Gretchen Rubin', 'Health & Wellness', 4.2, '30.79', 615),
+(129, 'The Devil\'s Hand', 'Jack Carr', 'Ray Porter', 'Mystery, Thriller & Suspense', 4.9, '23.62', 877),
+(130, 'Beyond Order', 'Jordan B. Peterson', 'Jordan B. Peterson', 'Health & Wellness', 4.9, '31.50', 791),
+(131, 'A Radical Awakening', 'Shefali Tsabary', 'Shefali Tsabary', 'Health & Wellness', 4.7, '34.22', 936),
+(132, 'Influence, New and Expanded', 'Robert B. Cialdini', 'Robert B. Cialdini', 'Business & Careers', 4.7, '49.05', 1243),
+(133, 'Noise', 'Daniel Kahneman', 'Jonathan Todd Ross', 'Health & Wellness', 4.2, '35.00', 808),
+(134, 'Beneath a Scarlet Sky', 'Mark Sullivan', 'Will Damron', 'Literature & Fiction', 4.7, '23.99', 1063),
+(135, 'Maverick', 'Jason L. Riley', 'Brad Sanders', 'Biographies & Memoirs', 4.8, '29.65', 453),
+(136, 'Don\'t Drop the Mic', 'T. D. Jakes', 'T. D. Jakes', 'Religion & Spirituality', 4.7, '29.65', 629),
+(137, 'To Kill a Mockingbird', 'Harper Lee', 'Sissy Spacek', 'Literature & Fiction', 4.8, '30.79', 737),
+(138, 'Eight Dates', 'John Gottman PhD', 'James Patrick Cronin', 'Relationships, Parenting & Personal Development', 4.7, '19.95', 309),
+(139, 'The Wizard\'s Butler', 'Nathan Lowell', 'Tom Taylorson', 'Science Fiction & Fantasy', 4.8, '34.99', 730),
+(140, 'The Monk Who Sold His Ferrari', 'Robin Sharma', 'Humphrey Bower', 'Literature & Fiction', 4.7, '29.84', 394),
+(141, 'Quiet', 'Susan Cain', 'Kathe Mazur', 'Health & Wellness', 4.5, '28.00', 639),
+(142, 'Getting Things Done', 'David Allen', 'David Allen', 'Business & Careers', 4.6, '27.99', 623),
+(143, 'The Big Leap', 'Gay Hendricks', 'Gay Hendricks', 'Business & Careers', 4.7, '21.67', 327),
+(144, 'Lord of the Flies', 'William Golding', 'William Golding', 'Teen', 4.2, '21.00', 395),
+(145, 'The Color of Law', 'Richard Rothstein', 'Adam Grupper', 'History', 4.8, '24.95', 572),
+(146, 'Harry Potter and the Chamber of Secrets, Book 2', 'J.K. Rowling', 'Jim Dale', 'Children\'s Audiobooks', 4.9, '29.99', 543),
+(147, 'Harry Potter and the Prisoner of Azkaban, Book 3', 'J.K. Rowling', 'Jim Dale', 'Children\'s Audiobooks', 4.9, '29.99', 709),
+(148, 'Pas de deux', 'E. J. Noyes', 'Abby Craden', 'Romance', 4.9, '24.95', 615),
+(149, 'Scarlet Feather', 'Maeve Binchy', 'Barbara Caruso', 'Literature & Fiction', 4.5, '38.49', 1208),
+(150, 'Guns, Germs and Steel', 'Jared Diamond', 'Doug Ordunio', 'History', 4.3, '35.00', 980),
+(151, 'The Boys in the Boat', 'Daniel James Brown', 'Edward Herrmann', 'Biographies & Memoirs', 4.8, '33.95', 864),
+(152, 'The Demon Under The Microscope', 'Thomas Hager', 'Stephen Hoye', 'Biographies & Memoirs', 4.4, '29.95', 734),
+(153, '12 Rules for Life', 'Jordan B. Peterson', 'Jordan B. Peterson', 'Health & Wellness', 4.6, '36.33', 940),
+(154, 'The Righteous Mind', 'Jonathan Haidt', 'Jonathan Haidt', 'Health & Wellness', 4.6, '34.99', 661),
+(155, 'Local Woman Missing', 'Mary Kubica', 'Brittany Pressley', 'Mystery, Thriller & Suspense', 4.4, '30.79', 700),
+(156, 'Codependent No More', 'Melody Beattie', 'Christina Moore', 'Health & Wellness', 4.6, '13.99', 504),
+(157, 'Come As You Are: Revised and Updated', 'Emily Nagoski PhD', 'Emily Nagoski', 'Health & Wellness', 4.8, '22.67', 690),
+(158, 'What Abigail Did That Summer', 'Ben Aaronovitch', 'Kobna Holdbrook-Smith', 'Mystery, Thriller & Suspense', 4.7, '20.99', 294),
+(159, 'The 5 Second Rule', 'Mel Robbins', 'Mel Robbins', 'Relationships, Parenting & Personal Development', 4.6, '19.95', 455),
+(160, 'A Promised Land', 'Barack Obama', 'Barack Obama', 'Biographies & Memoirs', 4.9, '45.50', 1750),
+(161, 'The Secret', 'Rhonda Byrne', 'Rhonda Byrne', 'Relationships, Parenting & Personal Development', 4.6, '23.93', 264),
+(162, 'Why We Sleep', 'Matthew Walker', 'Steve West', 'Health & Wellness', 4.8, '22.67', 832),
+(163, 'Could Have Been Us', 'Corinne Michaels', 'Ava Erickson', 'Romance', 4.9, '19.95', 560),
+(164, 'Stamped from the Beginning', 'Ibram X. Kendi', 'Christopher Dontrell Piper', 'Biographies & Memoirs', 4.8, '24.95', 1148),
+(165, 'The Last Green Valley', 'Mark Sullivan', 'Will Damron', 'Literature & Fiction', 4.8, '31.49', 968),
+(166, 'Firekeeper\'s Daughter', 'Angeline Boulley', 'Isabella Star LaBlanc', 'Teen', 4.7, '40.59', 853),
+(167, 'Tribe', 'Sebastian Junger', 'Sebastian Junger', 'Health & Wellness', 4.7, '28.50', 179),
+(168, 'The Great Gatsby', 'F. Scott Fitzgerald', 'Jake Gyllenhaal', 'Literature & Fiction', 4.4, '14.95', 289),
+(169, 'The Lean Startup', 'Eric Ries', 'Eric Ries', 'Business & Careers', 4.5, '28.00', 518),
+(170, 'Spilled Milk', 'K. L. Randis', 'K. L. Randis', 'Literature & Fiction', 4.8, '19.95', 463),
+(171, 'They Both Die at the End', 'Adam Silvera', 'Michael Crouch', 'Teen', 4.5, '33.08', 510),
+(172, 'It Didn\'t Start with You', 'Mark Wolynn', 'Mark Wolynn', 'Health & Wellness', 4.4, '28.00', 496),
+(173, 'Wild', 'Cheryl Strayed', 'Bernadette Dunne', 'Biographies & Memoirs', 4.4, '24.95', 782),
+(174, 'Children of Time', 'Adrian Tchaikovsky', 'Mel Hudson', 'Science Fiction & Fantasy', 4.4, '24.51', 991),
+(175, 'The Hate U Give', 'Angie Thomas', 'Bahni Turpin', 'Teen', 4.8, '38.78', 710),
+(176, 'The Four Winds', 'Kristin Hannah', 'Julia Whelan', 'Literature & Fiction', 4.7, '31.18', 902),
+(177, 'Breath', 'James Nestor', 'James Nestor', 'Science & Engineering', 4.8, '24.50', 438),
+(178, 'The Wars of the Roses', 'Dan Jones', 'John Curless', 'Biographies & Memoirs', 4.5, '29.95', 907),
+(179, 'Princess of Dorsa', 'Eliza Andrews', 'Elizabeth Saydah', 'LGBTQ+', 4.8, '24.95', 934),
+(180, 'The Lost Apothecary', 'Sarah Penner', 'Lorna Bennett', 'Literature & Fiction', 4.3, '30.79', 618),
+(181, 'The Devil in the White City', 'Erik Larson', 'Scott Brick', 'Biographies & Memoirs', 4.3, '31.95', 898),
+(182, 'Hamnet', 'Maggie O\'Farrell', 'Ell Potter', 'Literature & Fiction', 4.7, '31.50', 762),
+(183, 'The Woman in the Window', 'A. J. Finn', 'Ann Marie Lee', 'Mystery, Thriller & Suspense', 4.1, '34.22', 822),
+(184, 'Play Dead', 'Ted Dekker', 'A.W. Miller', 'Mystery, Thriller & Suspense', 4.3, '24.95', 749),
+(185, 'Beyond Religion', 'His Holiness the Dalai Lama', 'Martin Sheen', 'Politics & Social Sciences', 4.5, '19.95', 343),
+(186, 'Towers of Heaven', 'Cameron Milan', 'Steve Campbell', 'Literature & Fiction', 4.7, '24.95', 815),
+(187, 'Fahrenheit 451', 'Ray Bradbury', 'Tim Robbins', 'Literature & Fiction', 4.5, '19.95', 301),
+(188, 'Make Your Bed', 'William H. McRaven', 'William H. McRaven', 'Relationships, Parenting & Personal Development', 4.7, '18.24', 113),
+(189, 'Zero to One', 'Peter Thiel', 'Blake Masters', 'Business & Careers', 4.5, '21.00', 290),
+(190, 'Profit First', 'Mike Michalowicz', 'Mike Michalowicz', 'Business & Careers', 4.8, '20.99', 515),
+(191, 'The First 90 Days, Updated and Expanded', 'Michael Watkins', 'Grover Gardner', 'Business & Careers', 4.2, '20.99', 418),
+(192, 'Start with Why', 'Simon Sinek', 'Simon Sinek', 'Business & Careers', 4.7, '24.50', 438),
+(193, 'Winning', 'Tim S. Grover', 'Pete Simonelli', 'Business & Careers', 4.9, '17.00', 404),
+(194, 'While Justice Sleeps', 'Stacey Abrams', 'Adenrele Ojo', 'Mystery, Thriller & Suspense', 4.5, '35.00', 895),
+(195, 'The Shadow of the Gods', 'John Gwynne', 'Colin Mace', 'Science Fiction & Fantasy', 4.7, '30.79', 1094),
+(196, 'He Who Fights with Monsters 2', 'Shirtaloon', 'Heath Miller', 'Science Fiction & Fantasy', 4.9, '59.99', 1321),
+(197, 'The Well of Ascension', 'Brandon Sanderson', 'Michael Kramer', 'Science Fiction & Fantasy', 4.8, '47.93', 1736),
+(198, 'Influence', 'Robert B. Cialdini', 'Lloyd James', 'Business & Careers', 4.6, '24.95', 745),
+(199, 'All the Light We Cannot See', 'Anthony Doerr', 'Zach Appelman', 'Literature & Fiction', 4.5, '22.67', 962),
+(200, 'World War Z: The Complete Edition', 'Max Brooks', 'Max Brooks', 'Literature & Fiction', 4.6, '28.00', 729),
+(201, 'Fingerprints of the Gods', 'Graham Hancock', 'Graham Hancock', 'History', 4.7, '24.51', 1111),
+(202, 'Ready Player One', 'Ernest Cline', 'Wil Wheaton', 'Science Fiction & Fantasy', 4.8, '31.50', 940),
+(203, 'Orientalism', 'Edward Said', 'Peter Ganim', 'History', 4.3, '39.95', 1142),
+(205, 'How to Change', 'Katy Milkman', 'Katy Milkman', 'Business & Careers', 4.6, '24.50', 373),
+(206, 'The 80/80 Marriage', 'Nate Klemp', 'Roger Wayne', 'Relationships, Parenting & Personal Development', 4.5, '24.50', 388),
+(207, 'Sunshine Girl', 'Julianna Margulies', 'Julianna Margulies', 'Arts & Entertainment', 4.9, '28.00', 497),
+(208, 'Whole Brain Living', 'Jill Bolte Taylor PhD', 'Jill Bolte Taylor PhD', 'Health & Wellness', 4.9, '20.99', 674),
+(209, 'The Sum of Us', 'Heather McGhee', 'Heather McGhee', 'Politics & Social Sciences', 4.9, '28.00', 668),
+(210, 'Adult Children of Emotionally Immature Parents', 'Lindsay C. Gibson PsyD', 'Marguerite Gavin', 'Health & Wellness', 4.8, '24.49', 410),
+(211, 'The Miracle Morning', 'Hal Elrod', 'Rob Actis', 'Relationships, Parenting & Personal Development', 4.6, '14.95', 297),
+(212, 'The E-Myth Revisited', 'Michael E. Gerber', 'Michael E. Gerber', 'Business & Careers', 4.6, '27.37', 485),
+(213, 'Excellent Sheep', 'William Deresiewicz', 'Mel Foster', 'Education & Learning', 4.3, '26.59', 514),
+(214, 'White Fragility', 'Robin DiAngelo', 'Amy Landon', 'Politics & Social Sciences', 4.5, '39.20', 381),
+(216, 'The Five Dysfunctions of a Team', 'Patrick Lencioni', 'Charles Stransky; introduction by Patrick Lencioni', 'Business & Careers', 4.6, '21.00', 222),
+(217, 'The Hitchhiker\'s Guide to the Galaxy', 'Douglas Adams', 'Stephen Fry', 'Literature & Fiction', 4.6, '21.00', 351),
+(218, 'Northern Spy', 'Flynn Berry', 'Katharine Lee McEwan', 'Literature & Fiction', 4.3, '24.50', 472),
+(219, 'The Name of the Wind', 'Patrick Rothfuss', 'Nick Podehl', 'Literature & Fiction', 4.7, '29.99', 1675),
+(220, 'Where the Crawdads Sing', 'Delia Owens', 'Cassandra Campbell', 'Literature & Fiction', 4.8, '31.50', 732),
+(221, 'Broken Horses', 'Brandi Carlile', 'Brandi Carlile', 'Arts & Entertainment', 4.9, '28.00', 603),
+(222, 'The Obesity Code', 'Dr. Jason Fung', 'Brian Nishii', 'Health & Wellness', 4.7, '24.95', 609),
+(223, 'Empire of Pain', 'Patrick Radden Keefe', 'Patrick Radden Keefe', 'Biographies & Memoirs', 4.9, '38.50', 1086),
+(224, 'The Bloated Belly Whisperer', 'Tamara Duker Freuman MS RD CDN', 'Tamara Duker Freuman', 'Health & Wellness', 4.6, '25.51', 531),
+(225, 'Zodiac Academy', 'Caroline Peckham', 'Bridget Bordeaux', 'Romance', 4.7, '24.95', 730),
+(226, 'Celtic Mythology', 'Philip Freeman', 'Gerard Doyle', 'Literature & Fiction', 4.1, '19.99', 451),
+(227, 'The Stars, Like Dust', 'Isaac Asimov', 'Jon Lindstrom', 'Literature & Fiction', 4.6, '28.00', 493),
+(228, 'Nonviolent Communication', 'Marshall Rosenberg PhD', 'Marshall Rosenberg PhD', 'Relationships, Parenting & Personal Development', 4.8, '14.68', 309),
+(229, 'Hatchet', 'Gary Paulsen', 'Peter Coyote', 'Children\'s Audiobooks', 4.7, '21.27', 222),
+(230, 'Adventures in Opting Out', 'Cait Flanders', 'Christine Lakin', 'Relationships, Parenting & Personal Development', 4.3, '29.65', 378),
+(231, 'The Premonition', 'Michael Lewis', 'Adenrele Ojo', 'Health & Wellness', 4.5, '34.95', 686),
+(232, 'Flock', 'Kate Stewart', 'Maxine Mitchell', 'Romance', 4.8, '39.99', 612),
+(233, 'The Obstacle Is the Way', 'Ryan Holiday', 'Ryan Holiday', 'Business & Careers', 4.6, '19.95', 367),
+(234, 'The New Jim Crow', 'Michelle Alexander', 'Karen Chilton', 'Politics & Social Sciences', 4.8, '31.49', 1017),
+(235, 'A Little Life', 'Hanya Yanagihara', 'Oliver Wyman', 'Literature & Fiction', 4.3, '39.95', 1971),
+(236, 'Essentialism', 'Greg McKeown', 'Greg McKeown', 'Business & Careers', 4.7, '24.50', 374),
+(237, 'Shoe Dog', 'Phil Knight', 'Norbert Leo Butz', 'Biographies & Memoirs', 4.9, '27.99', 801),
+(238, 'Such a Fun Age', 'Kiley Reid', 'Nicole Lewis', 'Literature & Fiction', 4.3, '28.00', 598),
+(240, 'You Are Your Best Thing', 'Tarana Burke', 'Tarana Burke', 'Health & Wellness', 4.9, '28.00', 396),
+(241, 'Get Good with Money', 'Tiffany the Budgetnista Aliche', 'Tiffany the Budgetnista Aliche', 'Money & Finance', 4.9, '31.50', 743),
+(242, 'Fifty Words for Rain', 'Asha Lemmie', 'Robin Eller', 'Literature & Fiction', 4.2, '31.50', 793),
+(243, 'Think Like a Monk', 'Jay Shetty', 'Jay Shetty', 'Relationships, Parenting & Personal Development', 4.8, '23.62', 654),
+(244, 'Ready Player Two', 'Ernest Cline', 'Wil Wheaton', 'Science Fiction & Fantasy', 4.3, '31.50', 826),
+(245, 'Anxious People', 'Fredrik Backman', 'Marin Ireland', 'Literature & Fiction', 4.6, '23.62', 593),
+(246, 'The Silent Patient', 'Alex Michaelides', 'Jack Hawkins', 'Mystery, Thriller & Suspense', 4.5, '27.99', 523),
+(247, 'Educated', 'Tara Westover', 'Julia Whelan', 'Biographies & Memoirs', 4.8, '28.00', 730),
+(248, 'Woman Evolve', 'Sarah Jakes Roberts', 'Sarah Roberts', 'Religion & Spirituality', 4.9, '23.95', 373),
+(249, 'The Coddling of the American Mind', 'Jonathan Haidt', 'Jonathan Haidt', 'Health & Wellness', 4.8, '24.50', 606),
+(250, 'The 5 AM Club', 'Robin Sharma', 'Adam Verner', 'Business & Careers', 4.3, '30.79', 664),
+(251, 'Homeland Elegies', 'Ayad Akhtar', 'Ayad Akhtar', 'Literature & Fiction', 4.7, '29.65', 619),
+(252, 'The Code Breaker', 'Walter Isaacson', 'Kathe Mazur', 'Biographies & Memoirs', 4.7, '28.34', 964),
+(253, 'Klara and the Sun', 'Kazuo Ishiguro', 'Sura Siu', 'Literature & Fiction', 4.3, '28.00', 616),
+(254, 'Rich Dad Poor Dad: 20th Anniversary Edition', 'Robert T. Kiyosaki', 'Tom Parks', 'Money & Finance', 4.8, '14.99', 502),
+(256, 'Intentional Living', 'John C. Maxwell', 'John C Maxwell', 'Business & Careers', 4.8, '28.50', 488),
+(257, 'Think Again', 'Adam Grant', 'Adam Grant', 'Business & Careers', 4.7, '28.00', 400),
+(258, 'Dr Stanton', 'T L Swan', 'Elena Wolfe', 'Romance', 4.8, '24.95', 1113),
+(259, 'Black Flags, Blue Waters', 'Eric Jay Dolin', 'Paul Brion', 'History', 4.3, '24.95', 629),
+(260, 'The Nightingale', 'Kristin Hannah', 'Polly Stone', 'Literature & Fiction', 4.8, '31.18', 1039),
+(261, 'The Lightning Thief', 'Rick Riordan', 'Jesse Bernstein', 'Children\'s Audiobooks', 4.6, '31.93', 602),
+(262, 'A Life on Our Planet', 'Sir David Attenborough', 'Sir David Attenborough', 'Biographies & Memoirs', 4.8, '29.65', 380),
+(263, 'For We Are Many', 'Dennis E. Taylor', 'Ray Porter', 'Science Fiction & Fantasy', 4.8, '19.95', 539),
+(264, 'The War of Art', 'Steven Pressfield', 'Steven Pressfield', 'Relationships, Parenting & Personal Development', 4.5, '6.95', 149),
+(265, 'The Five Love Languages: The Secret to Love That Lasts', 'Gary Chapman', 'Gary Chapman', 'Relationships, Parenting & Personal Development', 4.8, '19.59', 286),
+(266, 'The Power of Now', 'Eckhart Tolle', 'Eckhart Tolle', 'Relationships, Parenting & Personal Development', 4.6, '20.00', 457),
+(267, 'We Are All the Same in the Dark', 'Julia Heaberlin', 'Jenna Lamia', 'Literature & Fiction', 4.5, '28.00', 634),
+(268, 'Midnight Sun', 'Stephenie Meyer', 'Jake Abel', 'Teen', 4.6, '34.21', 1549),
+(269, 'From Blood and Ash', 'Jennifer L. Armentrout', 'Stina Nielsen', 'Romance', 4.7, '31.49', 1186),
+(270, 'The Brilliant Life of Eudora Honeysett', 'Annie Lyons', 'Nicolette McKenzie', 'Literature & Fiction', 4.7, '30.79', 639),
+(271, 'Mindset', 'Carol S. Dweck PhD', 'Bernadette Dunne', 'Business & Careers', 4.6, '28.00', 623),
+(272, 'The Lost Art of Listening, Second Edition', 'Michael P. Nichols PhD', 'Sean Runnette', 'Education & Learning', 4.5, '27.99', 693),
+(274, 'Ender\'s Game', 'Orson Scott Card', 'Stefan Rudnicki', 'Science Fiction & Fantasy', 4.6, '31.93', 717),
+(275, 'Mastery', 'Robert Greene', 'Fred Sanders', 'Business & Careers', 4.6, '24.50', 969),
+(276, 'Revenant', 'David Petrie', 'Travis Baldree', 'Literature & Fiction', 4.8, '24.95', 865),
+(277, 'Mr. Smithfield', 'Louise Bay', 'Shane East', 'Erotica', 4.7, '19.95', 503),
+(278, 'It Ends with Us', 'Colleen Hoover', 'Olivia Song', 'Literature & Fiction', 4.6, '17.00', 671),
+(279, 'The Stand', 'Stephen King', 'Grover Gardner', 'Literature & Fiction', 4.7, '63.00', 2867),
+(280, 'Think and Grow Rich', 'Napoleon Hill', 'Erik Synnestvedt', 'Business & Careers', 4.6, '24.95', 575),
+(281, 'The Two Towers', 'J. R. R. Tolkien', 'Rob Inglis', 'Literature & Fiction', 4.9, '34.99', 1000),
+(282, 'The Return of the King', 'J. R. R. Tolkien', 'Rob Inglis', 'Literature & Fiction', 4.9, '34.99', 1099),
+(283, 'The Psychology of Money', 'Morgan Housel', 'Chris Hill', 'Money & Finance', 4.8, '19.95', 348),
+(284, 'Effortless', 'Greg McKeown', 'Greg McKeown', 'Business & Careers', 4.7, '28.00', 362),
+(285, 'The Hidden Lives of Tudor Women', 'Elizabeth Norton', 'Jennifer Dixon', 'Biographies & Memoirs', 4.2, '29.95', 740),
+(286, 'Reclaimed', 'Jaymin Eve', 'Michelle Sparks', 'Romance', 4.8, '24.95', 653),
+(287, 'Words of Radiance', 'Brandon Sanderson', 'Michael Kramer', 'Science Fiction & Fantasy', 4.9, '55.99', 2893),
+(288, 'State of Affairs', 'Marie Force', 'Eva Kaminksy', 'Mystery, Thriller & Suspense', 4.8, '24.95', 649),
+(289, 'A Beautifully Foolish Endeavor', 'Hank Green', 'Kristen Sieh', 'Literature & Fiction', 4.7, '35.00', 946),
+(290, 'Twisted Lies', 'Angela Marsons', 'Jan Cramer', 'Mystery, Thriller & Suspense', 4.7, '19.95', 513),
+(291, 'The Blade Itself', 'Joe Abercrombie', 'Steven Pacey', 'Literature & Fiction', 4.7, '25.08', 1335),
+(292, 'Give Them Lala', 'Lala Kent', 'Lala Kent', 'Relationships, Parenting & Personal Development', 4.8, '17.00', 344),
+(293, 'The Book Thief', 'Markus Zusak', 'Allan Corduner', 'Teen', 4.6, '41.27', 836),
+(294, 'The Count of Monte Cristo', 'Alexandre Dumas', 'Bill Homewood', 'Literature & Fiction', 4.8, '39.95', 3161),
+(296, 'Fault Lines', 'Voddie T. Baucham', 'Mirron Willis', 'Religion & Spirituality', 4.9, '24.47', 482),
+(297, 'The Deep Rig', 'Patrick Byrne', 'Patrick Byrne', 'Politics & Social Sciences', 4.9, '14.95', 297),
+(298, 'Sell or Be Sold: How to Get Your Way in Business and in Life', 'Grant Cardone', 'Grant Cardone', 'Business & Careers', 4.7, '24.95', 700),
+(299, 'Napoleon Hill\'s Outwitting the Devil', 'Napoleon Hill', 'Dan John Miller', 'Business & Careers', 4.8, '17.49', 351),
+(300, 'Bossypants', 'Tina Fey', 'Tina Fey', 'Arts & Entertainment', 4.5, '30.79', 332),
+(301, 'Winning the War in Your Mind', 'Craig Groeschel', 'Craig Groeschel', 'Health & Wellness', 4.9, '20.52', 299),
+(302, 'Elon Musk', 'Ashlee Vance', 'Fred Sanders', 'Biographies & Memoirs', 4.7, '34.22', 803),
+(303, 'Heart Full of Lies', 'Ann Rule', 'Cassandra Campbell', 'Biographies & Memoirs', 4.5, '23.62', 763),
+(304, 'Predictably Irrational', 'Dan Ariely', 'Simon Jones', 'Health & Wellness', 4.5, '27.37', 442),
+(305, 'When Breath Becomes Air', 'Paul Kalanithi', 'Sunil Malhotra', 'Biographies & Memoirs', 4.7, '28.00', 335),
+(306, 'Mating in Captivity', 'Esther Perel', 'Esther Perel', 'Erotica', 4.7, '27.37', 488),
+(307, 'Their Eyes Were Watching God', 'Zora Neale Hurston', 'Ruby Dee', 'Literature & Fiction', 4.6, '30.79', 404),
+(308, 'The Book of Joy', 'His Holiness the Dalai Lama', 'Douglas Carlton Abrams', 'Relationships, Parenting & Personal Development', 4.8, '28.00', 612),
+(309, 'Into the Wild', 'Jon Krakauer', 'Philip Franklin', 'Biographies & Memoirs', 4.4, '26.60', 425),
+(310, 'The Sandman', 'Neil Gaiman', 'Riz Ahmed', 'Science Fiction & Fantasy', 4.7, '34.95', 654),
+(311, 'Familiar Beginnings', 'Alice Winters', 'Greg Boudreaux', 'LGBTQ+', 4.9, '19.95', 386),
+(312, 'Doin\' a Dime', 'Lani Lynn Vale', 'Connor Crais', 'Romance', 4.8, '19.95', 374),
+(313, 'The Crown of Gilded Bones', 'Jennifer L. Armentrout', 'Stina Nielsen', 'Romance', 4.7, '31.49', 1522),
+(314, 'Hidden Figures', 'Margot Lee Shetterly', 'Robin Miles', 'Biographies & Memoirs', 4.3, '39.92', 647),
+(315, 'The Controlled Demolition of the American Empire', 'Jeff Berwick', 'Patrick Smith', 'Politics & Social Sciences', 5, '24.95', 1046),
+(316, 'Traction', 'Gino Wickman', 'Kevin Pierce', 'Business & Careers', 4.7, '19.95', 416),
+(317, 'The Millionaire Next Door', 'Thomas J. Stanley Ph.D.', 'Cotter Smith', 'Money & Finance', 4.6, '27.93', 496),
+(318, 'How Not to Die', 'Michael Greger MD', 'Michael Greger MD', 'Health & Wellness', 4.8, '34.99', 1029),
+(319, 'How to Avoid a Climate Disaster', 'Bill Gates', 'Wil Wheaton', 'Money & Finance', 4.7, '28.00', 431),
+(320, 'A Radical Guide for Women with ADHD', 'Sari Solden MS', 'Marni Penning', 'Health & Wellness', 4.4, '17.49', 402),
+(321, 'Talking to Strangers', 'Malcolm Gladwell', 'Malcolm Gladwell', 'Health & Wellness', 4.6, '30.79', 522),
+(322, 'The Handmaid\'s Tale', 'Margaret Atwood', 'Claire Danes', 'Literature & Fiction', 4.4, '24.95', 661),
+(323, 'Get Out of Your Head', 'Jennie Allen', 'Jennie Allen', 'Relationships, Parenting & Personal Development', 4.7, '24.50', 329),
+(324, 'A Very Punchable Face', 'Colin Jost', 'Colin Jost', 'Biographies & Memoirs', 4.8, '28.00', 461),
+(325, 'Tie Me Down', 'Melanie Harlow', 'Amanda Ronconi', 'Romance', 4.7, '19.95', 531),
+(327, 'Way of the Wolf', 'Jordan Belfort', 'Jordan Belfort', 'Business & Careers', 4.6, '20.99', 448),
+(328, 'Emotional Intelligence 2.0', 'Travis Bradberry', 'Tom Parks', 'Business & Careers', 4.2, '19.99', 257),
+(329, 'I Know Why the Caged Bird Sings', 'Maya Angelou', 'Maya Angelou', 'Biographies & Memoirs', 4.7, '28.00', 611),
+(330, 'The Magic of Thinking Big', 'David Schwartz', 'Jason Culp', 'Business & Careers', 4.7, '20.99', 571),
+(331, 'We Should All Be Millionaires', 'Rachel Rodgers', 'Rachel Rodgers', 'Business & Careers', 4.9, '23.95', 520),
+(333, 'Attached', 'Amir Levine', 'Robert Petkoff', 'Health & Wellness', 4.8, '24.50', 426),
+(334, 'Blackout', 'Candace Owens', 'Candace Owens', 'History', 4.9, '20.99', 411),
+(335, 'Life After Death', 'Sister Souljah', 'Nia Long', 'Literature & Fiction', 3.3, '28.34', 961),
+(337, 'Principles', 'Ray Dalio', 'Ray Dalio', 'Business & Careers', 4.6, '28.34', 965),
+(338, 'Where the Grass Is Green and the Girls Are Pretty', 'Lauren Weisberger', 'Thérèse Plummer', 'Literature & Fiction', 4.2, '31.50', 692),
+(339, 'We Few', 'Nick Brokhausen', 'George Spelvin', 'Biographies & Memoirs', 4.8, '29.95', 847),
+(340, 'The Eye of the World', 'Robert Jordan', 'Kate Reading', 'Science Fiction & Fantasy', 4.7, '47.24', 1797),
+(341, 'A Clash of Kings', 'George R.R. Martin', 'Roy Dotrice', 'Science Fiction & Fantasy', 4.8, '63.00', 2232),
+(342, 'The Dark Tower IV', 'Stephen King', 'Frank Muller', 'Literature & Fiction', 4.8, '37.79', 1655),
+(343, 'The ONE Thing', 'Gary Keller', 'Timothy Miller', 'Business & Careers', 4.6, '35.00', 328),
+(344, 'The Autobiography of Kathryn Janeway', 'Una McCormack', 'Kate Mulgrew', 'Literature & Fiction', 4.8, '17.49', 500),
+(345, 'The Warmth of Other Suns', 'Isabel Wilkerson', 'Robin Miles', 'History', 4.8, '39.95', 1360),
+(346, 'The Housewives', 'Brian Moylan', 'Brian Moylan', 'Arts & Entertainment', 3.9, '25.51', 560),
+(347, 'The Farseer: Assassin\'s Apprentice', 'Robin Hobb', 'Paul Boehmer', 'Science Fiction & Fantasy', 4.4, '27.99', 1038),
+(348, 'A Gentleman in Moscow', 'Amor Towles', 'Nicholas Guy Smith', 'Literature & Fiction', 4.7, '35.00', 1072),
+(349, 'Shadow of Night', 'Deborah Harkness', 'Jennifer Ikeda', 'Romance', 4.6, '45.50', 1465),
+(350, 'Creativity, Inc.', 'Ed Catmull', 'Peter Altschuler', 'Business & Careers', 4.7, '24.50', 772),
+(351, 'The Ultimate Retirement Guide for 50+', 'Suze Orman', 'Suze Orman', 'Money & Finance', 4.8, '18.89', 751),
+(352, 'A Court of Mist and Fury', 'Sarah J. Maas', 'Jennifer Ikeda', 'Teen', 4.8, '41.99', 1396),
+(353, 'A Court of Wings and Ruin', 'Sarah J. Maas', 'Amanda Leigh Cobb', 'Teen', 4.7, '31.49', 1509),
+(355, 'The Hidden Habits of Genius', 'Craig Wright', 'Fred Sanders', 'Biographies & Memoirs', 4.8, '30.79', 607),
+(356, 'The Menopause Manifesto', 'Dr. Jen Gunter', 'Jen Gunter', 'Politics & Social Sciences', 5, '20.99', 784),
+(357, 'Clarity and Connection', 'Yung Pueblo', 'Yung Pueblo', 'Literature & Fiction', 4.9, '12.59', 244),
+(358, 'White Wasteland', 'Jeff Kirkham', 'Kevin Pierce', 'Science Fiction & Fantasy', 4.7, '24.95', 770),
+(359, 'A People\'s History of the United States', 'Howard Zinn', 'Jeff Zinn', 'History', 4.4, '56.95', 2048),
+(360, 'The Lies of Locke Lamora', 'Scott Lynch', 'Michael Page', 'Literature & Fiction', 4.7, '42.00', 1356),
+(361, 'The Ride of a Lifetime', 'Robert Iger', 'Jim Frangione', 'Arts & Entertainment', 4.8, '28.00', 525),
+(362, 'Quit Like a Woman', 'Holly Whitaker', 'Holly Whitaker', 'Health & Wellness', 4.6, '28.00', 608),
+(363, 'The Dutch House', 'Ann Patchett', 'Tom Hanks', 'Literature & Fiction', 4.6, '30.79', 593),
+(364, 'We Are Legion (We Are Bob)', 'Dennis E. Taylor', 'Ray Porter', 'Science Fiction & Fantasy', 4.7, '19.95', 596),
+(365, 'Noob Game Plus', 'Ryan Rimmel', 'Johnathan McClain', 'Literature & Fiction', 4.9, '44.99', 1043),
+(366, 'The Whole-Brain Child', 'Daniel J. Siegel MD', 'Daniel J. Siegel MD', 'Health & Wellness', 4.6, '24.99', 376),
+(367, 'Start with No', 'Jim Camp', 'Robert James Jordan', 'Business & Careers', 4.7, '24.50', 478),
+(368, 'Golden Son', 'Pierce Brown', 'Tim Gerard Reynolds', 'Science Fiction & Fantasy', 4.8, '31.49', 1143),
+(369, 'The Tattooist of Auschwitz', 'Heather Morris', 'Richard Armitage', 'Literature & Fiction', 4.8, '23.95', 445),
+(370, 'Jungle Up', 'Nick Pirog', 'Johnny Heller', 'Literature & Fiction', 4.8, '24.47', 592),
+(371, 'Radical Candor: Fully Revised & Updated Edition', 'Kim Scott', 'Teri Schnaubelt', 'Business & Careers', 4.4, '32.19', 716),
+(372, 'No Rules Rules', 'Reed Hastings', 'Jason Culp', 'Arts & Entertainment', 4.7, '28.00', 582),
+(373, 'Irreversible Damage', 'Abigail Shrier', 'Pamela Almand', 'Politics & Social Sciences', 4.8, '24.47', 541),
+(374, 'Piranesi', 'Susanna Clarke', 'Chiwetel Ejiofor', 'Literature & Fiction', 4.6, '16.35', 418),
+(375, 'Mexican Gothic', 'Silvia Moreno-Garcia', 'Frankie Corzo', 'Literature & Fiction', 4.1, '28.00', 639),
+(376, 'How to Talk So Kids Will Listen & Listen So Kids Will Talk', 'Adele Faber', 'Susan Bennett', 'Relationships, Parenting & Personal Development', 4.7, '22.63', 504),
+(377, 'Between the World and Me', 'Ta-Nehisi Coates', 'Ta-Nehisi Coates', 'History', 4.8, '24.95', 215),
+(378, 'Algorithms to Live By', 'Brian Christian', 'Brian Christian', 'Business & Careers', 4.4, '29.99', 710),
+(379, 'The Testaments', 'Margaret Atwood', 'Derek Jacobi', 'Literature & Fiction', 4.7, '31.50', 798),
+(380, 'Red, White & Royal Blue', 'Casey McQuiston', 'Ramon de Ocampo', 'LGBTQ+', 4.6, '25.51', 735),
+(381, 'The Book of Longings', 'Sue Monk Kidd', 'Mozhan Marnò', 'Literature & Fiction', 4.7, '31.50', 807),
+(382, 'Before We Were Yours', 'Lisa Wingate', 'Emily Rankin', 'Literature & Fiction', 4.8, '35.00', 869),
+(383, 'The Knowing', 'Saje Dyer', 'Saje Dyer', 'Relationships, Parenting & Personal Development', 4.7, '14.69', 448),
+(384, 'The Book of Life', 'Deborah Harkness', 'Jennifer Ikeda', 'Literature & Fiction', 4.7, '45.50', 1433),
+(385, 'A River Runs Through It and Other Stories', 'Norman Maclean', 'David Manis', 'Literature & Fiction', 4.5, '18.86', 481),
+(386, 'Radical Acceptance', 'Tara Brach', 'Cassandra Campbell', 'Health & Wellness', 4.4, '27.99', 735);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Buys`
+--
+
+CREATE TABLE `Buys` (
+  `mem_id` varchar(100) DEFAULT NULL,
+  `book_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Buys`
+--
+
+INSERT INTO `Buys` (`mem_id`, `book_id`) VALUES
+('mem1', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Cart`
+--
+
+CREATE TABLE `Cart` (
+  `cart_id` int(11) NOT NULL,
+  `mem_id` varchar(100) DEFAULT NULL,
+  `cart_total` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Cart`
+--
+
+INSERT INTO `Cart` (`cart_id`, `mem_id`, `cart_total`) VALUES
+(1, 'mem1', '15.99');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Confirmation`
+--
+
+CREATE TABLE `Confirmation` (
+  `conf_code` int(11) NOT NULL,
+  `pay_id` int(11) DEFAULT NULL,
+  `card_holder` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Confirmation`
+--
+
+INSERT INTO `Confirmation` (`conf_code`, `pay_id`, `card_holder`) VALUES
+(1001, 1, 'John Smith');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Goes_to`
+--
+
+CREATE TABLE `Goes_to` (
+  `cart_id` int(11) DEFAULT NULL,
+  `pay_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Goes_to`
+--
+
+INSERT INTO `Goes_to` (`cart_id`, `pay_id`) VALUES
+(1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Has`
+--
+
+CREATE TABLE `Has` (
+  `pay_id` int(11) DEFAULT NULL,
+  `conf_code` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Has`
+--
+
+INSERT INTO `Has` (`pay_id`, `conf_code`) VALUES
+(1, 1001);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Member`
+--
+
+CREATE TABLE `Member` (
+  `mem_id` varchar(100) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `phone_num` varchar(15) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `password` varchar(100) DEFAULT NULL,
+  `date_of_birth` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Member`
+--
+
+INSERT INTO `Member` (`mem_id`, `name`, `phone_num`, `email`, `password`, `date_of_birth`) VALUES
+('mem1', 'John Smith', '434-456-7890', 'johnSmith@gmail.com', 'password123', '1990-05-15');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Payment`
+--
+
+CREATE TABLE `Payment` (
+  `pay_id` int(11) NOT NULL,
+  `credit_card` varchar(255) DEFAULT NULL,
+  `card_name` varchar(100) DEFAULT NULL,
+  `expiration` date DEFAULT NULL,
+  `csv` varchar(4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Payment`
+--
+
+INSERT INTO `Payment` (`pay_id`, `credit_card`, `card_name`, `expiration`, `csv`) VALUES
+(1, '1234-5678-9012-3456', 'John Smith', '2027-12-31', '325');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Ratings`
+--
+
+CREATE TABLE `Ratings` (
+  `book_id` int(11) DEFAULT NULL,
+  `mem_id` varchar(100) DEFAULT NULL,
+  `rate` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Ratings`
+--
+
+INSERT INTO `Ratings` (`book_id`, `mem_id`, `rate`) VALUES
+(1, 'mem1', 5);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Writes`
+--
+
+CREATE TABLE `Writes` (
+  `mem_id` varchar(100) DEFAULT NULL,
+  `book_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Writes`
+--
+
+INSERT INTO `Writes` (`mem_id`, `book_id`) VALUES
+('mem1', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `Added_to`
+--
+ALTER TABLE `Added_to`
+  ADD KEY `book_id` (`book_id`),
+  ADD KEY `cart_id` (`cart_id`);
+
+--
+-- Indexes for table `Audiobook`
+--
+ALTER TABLE `Audiobook`
+  ADD PRIMARY KEY (`book_id`);
+
+--
+-- Indexes for table `Buys`
+--
+ALTER TABLE `Buys`
+  ADD KEY `mem_id` (`mem_id`),
+  ADD KEY `book_id` (`book_id`);
+
+--
+-- Indexes for table `Cart`
+--
+ALTER TABLE `Cart`
+  ADD PRIMARY KEY (`cart_id`),
+  ADD KEY `mem_id` (`mem_id`);
+
+--
+-- Indexes for table `Confirmation`
+--
+ALTER TABLE `Confirmation`
+  ADD PRIMARY KEY (`conf_code`),
+  ADD KEY `pay_id` (`pay_id`);
+
+--
+-- Indexes for table `Goes_to`
+--
+ALTER TABLE `Goes_to`
+  ADD KEY `cart_id` (`cart_id`),
+  ADD KEY `pay_id` (`pay_id`);
+
+--
+-- Indexes for table `Has`
+--
+ALTER TABLE `Has`
+  ADD KEY `pay_id` (`pay_id`),
+  ADD KEY `conf_code` (`conf_code`);
+
+--
+-- Indexes for table `Member`
+--
+ALTER TABLE `Member`
+  ADD PRIMARY KEY (`mem_id`);
+
+--
+-- Indexes for table `Payment`
+--
+ALTER TABLE `Payment`
+  ADD PRIMARY KEY (`pay_id`);
+
+--
+-- Indexes for table `Ratings`
+--
+ALTER TABLE `Ratings`
+  ADD KEY `book_id` (`book_id`),
+  ADD KEY `mem_id` (`mem_id`);
+
+--
+-- Indexes for table `Writes`
+--
+ALTER TABLE `Writes`
+  ADD KEY `mem_id` (`mem_id`),
+  ADD KEY `book_id` (`book_id`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `Added_to`
+--
+ALTER TABLE `Added_to`
+  ADD CONSTRAINT `Added_to_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `Audiobook` (`book_id`),
+  ADD CONSTRAINT `Added_to_ibfk_2` FOREIGN KEY (`cart_id`) REFERENCES `Cart` (`cart_id`);
+
+--
+-- Constraints for table `Buys`
+--
+ALTER TABLE `Buys`
+  ADD CONSTRAINT `Buys_ibfk_1` FOREIGN KEY (`mem_id`) REFERENCES `Member` (`mem_id`),
+  ADD CONSTRAINT `Buys_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `Audiobook` (`book_id`);
+
+--
+-- Constraints for table `Cart`
+--
+ALTER TABLE `Cart`
+  ADD CONSTRAINT `Cart_ibfk_1` FOREIGN KEY (`mem_id`) REFERENCES `Member` (`mem_id`);
+
+--
+-- Constraints for table `Confirmation`
+--
+ALTER TABLE `Confirmation`
+  ADD CONSTRAINT `Confirmation_ibfk_1` FOREIGN KEY (`pay_id`) REFERENCES `Payment` (`pay_id`);
+
+--
+-- Constraints for table `Goes_to`
+--
+ALTER TABLE `Goes_to`
+  ADD CONSTRAINT `Goes_to_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `Cart` (`cart_id`),
+  ADD CONSTRAINT `Goes_to_ibfk_2` FOREIGN KEY (`pay_id`) REFERENCES `Payment` (`pay_id`);
+
+--
+-- Constraints for table `Has`
+--
+ALTER TABLE `Has`
+  ADD CONSTRAINT `Has_ibfk_1` FOREIGN KEY (`pay_id`) REFERENCES `Payment` (`pay_id`),
+  ADD CONSTRAINT `Has_ibfk_2` FOREIGN KEY (`conf_code`) REFERENCES `Confirmation` (`conf_code`);
+
+--
+-- Constraints for table `Ratings`
+--
+ALTER TABLE `Ratings`
+  ADD CONSTRAINT `Ratings_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `Audiobook` (`book_id`),
+  ADD CONSTRAINT `Ratings_ibfk_2` FOREIGN KEY (`mem_id`) REFERENCES `Member` (`mem_id`);
+
+--
+-- Constraints for table `Writes`
+--
+ALTER TABLE `Writes`
+  ADD CONSTRAINT `Writes_ibfk_1` FOREIGN KEY (`mem_id`) REFERENCES `Member` (`mem_id`),
+  ADD CONSTRAINT `Writes_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `Audiobook` (`book_id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
