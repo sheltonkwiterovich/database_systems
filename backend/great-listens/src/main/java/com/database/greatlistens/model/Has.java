@@ -1,13 +1,15 @@
 package com.database.greatlistens.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import com.database.greatlistens.CompositeIds.HasId;
 
-@Table(name = "Has")
+@Entity
+@Table(name = "has")
 @IdClass(HasId.class)
 public class Has {
     @Id
@@ -17,6 +19,9 @@ public class Has {
     @Id
     @Column(name = "conf_code")
     private int conf_code;
+
+    public Has() {
+    }
 
     public Has(int pay_id, int conf_code) {
         this.pay_id = pay_id;

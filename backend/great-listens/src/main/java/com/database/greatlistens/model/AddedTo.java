@@ -1,24 +1,29 @@
 package com.database.greatlistens.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.database.greatlistens.CompositeIds.BuysId;
+import com.database.greatlistens.CompositeIds.AddedToId;
 
-@Table(name = "Added_to")
-@IdClass(BuysId.class)
+@Entity
+@Table(name = "added_to")
+@IdClass(AddedToId.class)
 public class AddedTo {
     @Id
-   //@ManyToOne
     @Column(name = "book_id")
     private int book_id;
 
     @Id
     @Column(name = "cart_id")
     private int cart_id;
+
+    
+    public AddedTo() {
+    }
 
     public AddedTo(int book_id, int cart_id) {
         this.book_id = book_id;

@@ -7,7 +7,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import com.database.greatlistens.CompositeIds.BuysId;
 
-@Table(name = "Buys")
+@Entity
+@Table(name = "buys")
 @IdClass(BuysId.class)
 public class Buys {
     @Id
@@ -34,6 +35,10 @@ public class Buys {
 
     public void setBook_id(int book_id) {
         this.book_id = book_id;
+    }
+
+    
+    public Buys() {
     }
 
     public Buys(String mem_id, int book_id) {

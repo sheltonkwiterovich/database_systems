@@ -6,82 +6,95 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Audiobook")
+@Table(name = "audiobook")
 public class Audiobook {
     @Id
     @Column(name = "book_id")
-    private Integer book_id;
+    private int book_id;
+
+    @Column(name = "book_name")
+    private String book_name;
+
+    @Column(name = "book_author")
+    private String book_author;
+
+    @Column(name = "book_narrator")
+    private String book_narrator;
+
+    @Column(name = "categories")
+    private String categories;
 
     @Column(name = "rating")
-    private int rating;
-
-    @Column(name = "listening_time")
-    private java.sql.Time listening_time;
-
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "author")
-    private String author;
+    private double rating;
 
     @Column(name = "price")
     private double price;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "listening_time")
+    private int listening_time;
 
+    
     public Audiobook() {
     }
 
-    public Audiobook(int book_id, int rating, java.sql.Time listening_time, String title, String author, double price,
-            String description) {
+    public Audiobook(Integer book_id, String book_name, String book_author, String book_narrator, String categories,
+            double rating, double price, int listening_time) {
         this.book_id = book_id;
+        this.book_name = book_name;
+        this.book_author = book_author;
+        this.book_narrator = book_narrator;
+        this.categories = categories;
         this.rating = rating;
-        this.listening_time = listening_time;
-        this.title = title;
-        this.author = author;
         this.price = price;
-        this.description = description;
+        this.listening_time = listening_time;
     }
 
-    public int getBook_id() {
+    public Integer getBook_id() {
         return book_id;
     }
 
-    public void setBook_id(int book_id) {
+    public void setBook_id(Integer book_id) {
         this.book_id = book_id;
     }
 
-    public int getRating() {
+    public String getBook_name() {
+        return book_name;
+    }
+
+    public void setBook_name(String book_name) {
+        this.book_name = book_name;
+    }
+
+    public String getBook_author() {
+        return book_author;
+    }
+
+    public void setBook_author(String book_author) {
+        this.book_author = book_author;
+    }
+
+    public String getBook_narrator() {
+        return book_narrator;
+    }
+
+    public void setBook_narrator(String book_narrator) {
+        this.book_narrator = book_narrator;
+    }
+
+    public String getCategories() {
+        return categories;
+    }
+
+    public void setCategories(String categories) {
+        this.categories = categories;
+    }
+
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
-    }
-
-    public java.sql.Time getListening_time() {
-        return listening_time;
-    }
-
-    public void setListening_time(java.sql.Time listening_time) {
-        this.listening_time = listening_time;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public double getPrice() {
@@ -92,13 +105,15 @@ public class Audiobook {
         this.price = price;
     }
 
-    public String getDescription() {
-        return description;
+    public int getListening_time() {
+        return listening_time;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setListening_time(int listening_time) {
+        this.listening_time = listening_time;
     }
+
+    
 
     
 }

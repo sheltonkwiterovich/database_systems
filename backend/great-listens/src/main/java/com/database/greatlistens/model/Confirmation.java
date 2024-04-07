@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Confirmation")
+@Table(name = "confirmation")
 public class Confirmation {
     @Id
     @Column(name = "conf_code")
@@ -17,6 +17,10 @@ public class Confirmation {
 
     @Column(name = "card_holder")
     private String card_holder;
+
+    
+    public Confirmation() {
+    }
 
     public Confirmation(int conf_code, int pay_id, String card_holder) {
         this.conf_code = conf_code;

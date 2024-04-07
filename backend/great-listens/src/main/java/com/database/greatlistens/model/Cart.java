@@ -7,23 +7,26 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Cart")
+@Table(name = "cart")
 public class Cart {
 
     @Id
     @Column(name = "cart_id")
     private int cart_id;
 
-    @Column(name = "user_id")
+    @Column(name = "mem_id")
     //@ManyToOne
-    private int user_id;
+    private String mem_id;
 
     @Column(name = "cart_total")
     private double cart_total;
 
-    public Cart(int cart_id, int user_id, double cart_total) {
+    public Cart() {
+    }
+
+    public Cart(int cart_id, String user_id, double cart_total) {
         this.cart_id = cart_id;
-        this.user_id = user_id;
+        this.mem_id = user_id;
         this.cart_total = cart_total;
     }
 
@@ -35,12 +38,12 @@ public class Cart {
         this.cart_id = cart_id;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public String getMem_id() {
+        return mem_id;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setMem_id(String mem_id) {
+        this.mem_id = mem_id;
     }
 
     public double getCart_total() {
@@ -51,5 +54,4 @@ public class Cart {
         this.cart_total = cart_total;
     }
 
-    
 }

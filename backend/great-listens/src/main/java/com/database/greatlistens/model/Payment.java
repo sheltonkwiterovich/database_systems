@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Payment")
+@Table(name = "payment")
 public class Payment {
 
     @Id
@@ -26,6 +26,11 @@ public class Payment {
 
     @Column(name = "csv")
     private String csv;
+
+    
+
+    public Payment() {
+    }
 
     public Payment(int pay_id, String credit_card, String card_name, Date expiratation, String csv) {
         this.pay_id = pay_id;

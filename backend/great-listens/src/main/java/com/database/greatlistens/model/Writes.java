@@ -11,7 +11,8 @@ import javax.validation.constraints.NotNull;
 
 import com.database.greatlistens.CompositeIds.WritesId;
 
-@Table(name = "Writes")
+@Entity
+@Table(name = "writes")
 @IdClass(WritesId.class)
 public class Writes {
     @Id
@@ -38,6 +39,10 @@ public class Writes {
 
     public void setBook_id(int book_id) {
         this.book_id = book_id;
+    }
+    
+
+    public Writes() {
     }
 
     public Writes(String mem_id, int book_id) {

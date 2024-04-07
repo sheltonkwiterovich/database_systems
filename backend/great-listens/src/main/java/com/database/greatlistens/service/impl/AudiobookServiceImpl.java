@@ -15,4 +15,45 @@ public class AudiobookServiceImpl implements AudiobookService {
     public List<Audiobook> getAllAudiobooks() {
         return audiobookRepository.getAllAudiobooks(); 
     }
+
+    public List<Audiobook> sortAudiobooksByPriceLowToHigh() {
+        return audiobookRepository.sortAudiobooksByPriceLowToHigh();
+    }
+
+    public List<Audiobook> sortAudiobooksByPriceHighToLow() {
+        return audiobookRepository.sortAudiobooksByPriceHighToLow();
+    }
+
+    public List<Audiobook> sortAudiobooksByListeningTimeLowToHigh() {
+        return audiobookRepository.sortAudiobooksByListeningTimeLowToHigh();
+    }
+
+    public List<Audiobook> sortAudiobooksByListeningTimeHighToLow() {
+        return audiobookRepository.sortAudiobooksByListeningTimeHighToLow();
+    }
+
+    public List<Audiobook> searchAudiobooksByAuthor(String author) {
+        return audiobookRepository.searchAudiobooksByAuthor(author);
+    }
+
+    public List<Audiobook> searchAudiobooksByCategories(String categories) {
+        System.out.println("TEST1\n");
+        System.out.println(categories);
+        System.out.println("\n");
+        return audiobookRepository.searchAudiobooksByCategories(categories);
+    }
+
+    public Audiobook searchByAudiobookId(Integer bookId) {
+        return audiobookRepository.searchByAudiobookId(bookId);
+    }
+
+    public void updateAudiobook(int bookId, String newName, String newAuthor, String newNarrator,
+                                String newCategories, double newRating, double newPrice, int newListeningTime) {
+        audiobookRepository.updateAudiobook(bookId, newName, newAuthor, newNarrator,
+                newCategories, newRating, newPrice, newListeningTime);
+    }
+
+    public void deleteAudiobookById(int bookId) {
+        audiobookRepository.deleteAudiobookById(bookId);
+    }
 }

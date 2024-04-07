@@ -1,12 +1,14 @@
 package com.database.greatlistens.model;
 
+import java.sql.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Member")
+@Table(name = "member")
 public class Member {
 
     @Id
@@ -25,19 +27,19 @@ public class Member {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "age")
-    private int age;
+    @Column(name = "date_of_birth")
+    private Date date_of_birth;
 
-    
-    
-    public Member(String mem_id, String name, String phone_num, String email,
-            String password, int age) {
+    public Member() {
+    }
+
+    public Member(String mem_id, String name, String phone_num, String email, String password, Date date_of_birth) {
         this.mem_id = mem_id;
         this.name = name;
         this.phone_num = phone_num;
         this.email = email;
         this.password = password;
-        this.age = age;
+        this.date_of_birth = date_of_birth;
     }
 
     public String getMem_id() {
@@ -80,15 +82,11 @@ public class Member {
         this.password = password;
     }
 
-    public int getAge() {
-        return age;
+    public Date getDate_of_birth() {
+        return date_of_birth;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setDate_of_birth(Date date_of_birth) {
+        this.date_of_birth = date_of_birth;
     }
-
-    
-    
-    
 }
