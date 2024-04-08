@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import com.database.greatlistens.CompositeIds.GoesToId;
 
@@ -13,12 +12,10 @@ import com.database.greatlistens.CompositeIds.GoesToId;
 @IdClass(GoesToId.class)
 public class Goes_To {
     @Id
-    //@OneToOne
     @Column(name = "cart_id")
     private int cart_id;
 
     @Id
-    //@OneToOne
     @Column(name = "pay_id")
     private int pay_id;
 

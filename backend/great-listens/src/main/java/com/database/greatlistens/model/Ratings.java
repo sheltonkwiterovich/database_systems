@@ -3,7 +3,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.database.greatlistens.CompositeIds.RatingsId;
@@ -12,12 +11,10 @@ import com.database.greatlistens.CompositeIds.RatingsId;
 @Table(name = "ratings")
 @IdClass(RatingsId.class)
 public class Ratings {
-    //@ManyToOne
     @Id
     @Column(name = "mem_id")
     private String mem_id;
     
-    //@ManyToOne
     @Id
     @Column(name = "book_id")
     private int book_id;

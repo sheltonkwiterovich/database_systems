@@ -1,13 +1,9 @@
 package com.database.greatlistens.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import com.database.greatlistens.CompositeIds.WritesId;
 
@@ -17,12 +13,10 @@ import com.database.greatlistens.CompositeIds.WritesId;
 public class Writes {
     @Id
     @Column(name = "mem_id")
-    //@ManyToOne
     private String mem_id;
 
     @Id
     @Column(name = "book_id")
-    //@ManyToOne
     private int book_id;
 
     public String getMem_id() {

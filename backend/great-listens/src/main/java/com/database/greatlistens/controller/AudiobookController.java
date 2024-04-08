@@ -57,7 +57,7 @@ public class AudiobookController {
         return audiobookService.sortAudiobooksByListeningTimeHighToLow();
     }
 
-    // http://localhost:8080/api/audiobooks/search/author/{author}
+    // http://localhost:8080/api/audiobooks/search/author
     @GetMapping("/search/author")
     @ResponseBody
     public List<Audiobook> searchAudiobooksByAuthor(@RequestBody Map<String, Object> requestBody) {
@@ -65,7 +65,7 @@ public class AudiobookController {
         return audiobookService.searchAudiobooksByAuthor(author);
     }
 
-    // http://localhost:8080/api/audiobooks/search/categories/{categories}
+    // http://localhost:8080/api/audiobooks/search/categories––
     @GetMapping("/search/categories")
     @ResponseBody
     public List<Audiobook> searchAudiobooksByCategories(@RequestBody Map<String, Object> requestBody) {

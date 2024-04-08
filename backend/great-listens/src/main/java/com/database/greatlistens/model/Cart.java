@@ -3,7 +3,6 @@ package com.database.greatlistens.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -15,7 +14,6 @@ public class Cart {
     private int cart_id;
 
     @Column(name = "mem_id")
-    //@ManyToOne
     private String mem_id;
 
     @Column(name = "cart_total")

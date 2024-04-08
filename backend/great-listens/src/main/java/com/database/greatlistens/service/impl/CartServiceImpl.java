@@ -25,11 +25,7 @@ public class CartServiceImpl implements CartService{
     @Transactional
     public Cart createCart(String mem_id) {
         int cart_id = cartRepository.getCartCount();
-        System.out.println("!!!!!!!!!!!!!!!!!!!!\n");
-        System.out.println(cart_id);
-        System.out.println("!!!!!!!!!!!!!!!!!!!!\n");
         cartRepository.createCart(cart_id, mem_id, 0.0);
-        System.out.println("TEST\n");
         Cart cart = cartRepository.searchByCartId(cart_id);
         return cart;
     }

@@ -3,7 +3,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import com.database.greatlistens.CompositeIds.BuysId;
 
@@ -13,12 +12,10 @@ import com.database.greatlistens.CompositeIds.BuysId;
 public class Buys {
     @Id
     @Column(name = "mem_id")
-    //@ManyToOne
     private String mem_id;
 
     @Id
     @Column(name = "book_id")
-    //@ManyToOne
     private int book_id;
 
     public String getMem_id() {

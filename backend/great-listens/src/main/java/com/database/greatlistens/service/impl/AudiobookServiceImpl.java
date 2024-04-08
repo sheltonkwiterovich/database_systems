@@ -37,9 +37,6 @@ public class AudiobookServiceImpl implements AudiobookService {
     }
 
     public List<Audiobook> searchAudiobooksByCategories(String categories) {
-        System.out.println("TEST1\n");
-        System.out.println(categories);
-        System.out.println("\n");
         return audiobookRepository.searchAudiobooksByCategories(categories);
     }
 
