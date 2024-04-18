@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Great Listens</title>
+    <link rel="stylesheet" href="/css/styles3.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="/login">Sign up/Log in</a></li>
+                    <li><a href="/" class="title">Great Listens</a></li>
+                    <li><a href="/cart">View Cart</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="sorting">
+            <div class="dropdown">
+                <button class="dropbtn">Sort</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="sortBooks('price', 'asc')">Sort by Price Low to High</a>
+                    <a href="#" onclick="sortBooks('price', 'desc')">Sort by Price High to Low</a>
+                    <a href="#" onclick="sortBooks('time', 'asc')">Sort by Listening Time Low to High</a>
+                    <a href="#" onclick="sortBooks('time', 'desc')">Sort by Listening Time High to Low</a>
+                    <!-- More sort/filter options -->
+                </div>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search-input-author" placeholder="Search by author">
+            <button onclick="searchBooks('auth')">Search</button>
+            <input type="text" id="search-input-category" placeholder="Search by category">
+            <button onclick="searchBooks('cat')">Search</button>
+            <input type="text" id="search-input-id" placeholder="Search by book ID">
+            <button onclick="searchBooks('id')">Search</button>
+        </div>
+        <main>
+            <section class="book-grid" id="book-grid">
+                <!-- Books will be loaded here by JavaScript -->
+            </section>
+        </main>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+        // Retrieve the user ID and username from sessionStorage
+        var userId = sessionStorage.getItem('userID');
+        var username = sessionStorage.getItem('username'); // Make sure this is set during login
+
+        // Set the welcome message with the username
+        $('#username-display').text('Welcome, ' + username);
+
+        // Handle delete account button click
+        $('#delete-account-btn').on('click', function() {
+            if(confirm('Are you sure you want to delete your account? This cannot be undone.')) {
+                $.ajax({
+                    url: 'http://localhost:8080/api/member/delete',
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ "mem_id": userId }),
+                    success: function(response) {
+                        alert('Account deleted successfully.');
+                        sessionStorage.clear(); // Clear the session storage
+                        window.location.href = '/login'; // Redirect to login after account deletion
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Failed to delete account: ' + xhr.responseText);
+                    }
+                });
+            }
+        });
+
+
+
+
+
+
+         // Function to fetch and display all books
+         function displayBooks() {
+            // URL of the API endpoint
+            var url = 'http://localhost:8080/api/audiobooks';
+            
+            // Fetch all the books
+            $.getJSON(url, function(books) {
+                // Clear the existing books
+                $('#book-grid').empty();
+                
+                // Add all books to the grid
+                books.forEach(function(book) {
+                    $('#book-grid').append(
+                        '<div class="book-item">' +
+                            '<h3>' + book.book_name + '</h3>' +
+                            '<p>Author: ' + book.book_author + '</p>' +
+                            '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
+                        '</div>'
+                    );
+                });
+            });
+        }
+        
+        // Sort books based on the sort field and order
+        function sortBooks(sortField, sortOrder) {
+    var baseUrl = 'http://localhost:8080/api/audiobooks/sort/';
+    var sortPath = '';
+
+    // Check which sortField is being used and set the corresponding API path
+    if (sortField === 'price') {
+        sortPath = 'price/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
+    } else if (sortField === 'time') {
+        sortPath = 'listening-time/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
+    }
+
+    // Construct the full URL
+    var url = baseUrl + sortPath;
+
+    // Fetch the sorted books
+    $.getJSON(url, function(books) {
+                // Clear the existing books
+                $('#book-grid').empty();
+                
+                // Add the sorted books to the grid
+                books.forEach(function(book) {
+                    $('#book-grid').append(
+                        '<div class="book-item">' +
+                            '<h3>' + book.book_name + '</h3>' +
+                            '<p>' + book.book_author + '</p>' +
+                            '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
+                            '<button onclick="addToCart(' + book.book_id + ')" class="add-to-cart-btn">Add to Cart</button>' +
+                        '</div>'
+                    );
+                });
+            });
+        }
+        
+        // Get all books when the page loads
+       // Function to search books based on the input value
+     // Function to search books based on the input value
+function searchBooks(searchType) {
+    var inputElementId = '';
+    var searchParam = '';
+    var baseUrl = 'http://localhost:8080/api/audiobooks/search/';
+
+    if (searchType === 'auth') {
+        inputElementId = '#search-input-author';
+        searchParam = 'author';
+    } else if (searchType === 'cat') {
+        inputElementId = '#search-input-category';
+        searchParam = 'categories';
+    } else if (searchType === 'id') {
+        inputElementId = '#search-input-id';
+        searchParam = 'id';
+    }
+
+    var url = baseUrl + 1 //??
+
+    // Fetch the searched books
+    $.getJSON(url, function(books) {
+        // Clear the existing books
+        $('#book-grid').empty();
+
+        // Add the searched books to the grid
+        books.forEach(function(book) {
+            $('#book-grid').append(
+                '<div class="book-item">' +
+                    '<h3>' + book.book_name + '</h3>' +
+                    '<p>' + book.book_author + '</p>' +
+                    '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
+                    '<button onclick="addToCart(' + book.book_id + ')" class="add-to-cart-btn">Add to Cart</button>' +
+                '</div>'
+            );
+        });
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Error occurred during the search: ", textStatus, errorThrown);
+    });
+}
+
+        // Get all books when the page loads
+        $(function() {
+            sortBooks('price', 'asc'); // Default sort
+        });
+        
+        // Function to handle "Learn more" button click
+    // Function to handle "Learn more" button click
+    function learnMore(bookId) {
+            window.location.href = '/book/' + bookId; // Navigate to the book details page
+        }
+
+        $('#logout-btn').on('click', function() {
+            sessionStorage.clear(); // This will remove all the sessionStorage items
+            window.location.href = '/login'; // Redirect to the login page
+        });
+    });
+        
+    </script>
+</body>
+</html>
+

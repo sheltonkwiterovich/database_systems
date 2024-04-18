@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login and Registration - Great Listens</title>
+    <link rel="stylesheet" href="css/styles2.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="split left">
+            <h2>Have An Account?</h2>
+            <form id="login-form">
+                <label for="login-email">Email:</label>
+                <input type="email" id="login-email" name="email" required>
+                
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" name="password" required>
+                
+                <button type="submit">Login</button>
+            </form>
+        </div>
+        
+        <div class="split right">
+            <h2>New to Great Listens?</h2>
+            <form id="registration-form">
+                <label for="first-name">First Name:</label>
+                <input type="text" id="first-name" name="first_name" required>
+                
+                <label for="last-name">Last Name:</label>
+                <input type="text" id="last-name" name="last_name" required>
+                
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" required>
+                
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+
+        <div class="split image">
+            <img src="css/stack.png" alt="Stack of Books">
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Handle login form submission
+            $('#login-form').on('submit', function(e) {
+                e.preventDefault();
+                var loginData = {
+                    email: $('#login-email').val(),
+                    password: $('#login-password').val()
+                };
+                $.ajax({
+                    url: 'http://localhost:8080/api/member/login',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(loginData),
+                    success: function(response) {
+                        console.log('Login successful', response);
+                        alert('Login successful!');
+                         // Store the user ID in sessionStorage or localStorage
+                        sessionStorage.setItem('userID', response.userID); // Assuming response.userID contains the user's ID
+                       
+                        window.location.href = '/dashboard'; // Replace with the path to your dashboard page
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Login failed', xhr, status, error);
+                        alert('Login failed: ' + xhr.responseText);
+                    }
+                });
+            });
+
+            // Handle registration form submission
+            $('#registration-form').on('submit', function(e) {
+                e.preventDefault();
+                var registrationData = {
+                    "name": $('#first-name').val() + ' ' + $('#last-name').val(),
+                    "phone_num": $('#phone').val(),
+                    "email": $('#email').val(),
+                    "password": $('#password').val(),
+                    "date_of_birth": $('#dob').val()
+                };
+                $.ajax({
+                    url: 'http://localhost:8080/api/member/create',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(registrationData),
+                    success: function(response) {
+                        console.log('Registration successful', response);
+                        alert('Registration successful! You can now log in.');
+                        window.location.href = '/login'; // Replace with the path to your login page
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Registration failed', xhr, status, error);
+                        alert('Registration failed: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
