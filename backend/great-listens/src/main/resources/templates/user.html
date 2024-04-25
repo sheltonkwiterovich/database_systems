@@ -32,15 +32,13 @@
             <!-- The book divs will have ratings integrated -->
             <div class="book">
                 <span>📘 Harry Potter Book - <span class="rating">5/5</span></span>
-                <button>Click to rate or edit rating</button>
+                <button onclick="window.location.href='/rate';">Click to rate or edit rating</button>
             </div>
             <div class="book">
                 <span>📘 Booth Book - <span class="rating">No rating yet</span></span>
-                <button>Click to rate or edit rating</button>
+                <button onclick="window.location.href='/rate';">Click to rate or edit rating</button>
             </div>
-        </div>
-    </section>
-
+            
     <script>
       function fetchUserData() {
     const token = sessionStorage.getItem('authToken');

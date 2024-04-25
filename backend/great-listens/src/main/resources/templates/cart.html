@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart - Great Listens</title>
+    <link rel="stylesheet" href="/css/styles2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <link rel="stylesheet" href="/css/styles3.css">
+        <nav>
+            <ul>
+                <li><a href="/dashboard2">Shop for AudioBooks</a></li>
+                <li><a href="/" class="title">Great Listens</a></li>
+                <li><a href="/user">Your Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="main-container">
+        <link rel="stylesheet" href="/css/styles2.css">
+        <div class="split left">
+            <h2>Your Cart</h2>
+            <section class="book-grid" id="book-grid">
+                <!-- Books will be loaded here by JavaScript -->
+            </section>
+        </div>
+        
+        <div class="split right">
+            <h2>Proceed to Checkout</h2>
+            <form id="checkout-form">
+                <label for="card-number">Card Number:</label>
+                <input type="text" id="card-number" name="card-number" required>
+                
+                <label for="cvv">CVV:</label>
+                <input type="text" id="cvv" name="cvv" required>
+                
+                <label for="expiration-date">Expiration Date:</label>
+                <input type="date" id="expiration-date" name="expiration-date" required>
+                
+                <label for="card-name">Name on Card:</label>
+                <input type="text" id="card-name" name="card-name" required>
+                
+                <button type="submit">COMPLETE PURCHASE</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            var cartId = sessionStorage.getItem('cartID'); // Get cart ID from session storage
+
+            function viewBooksInCart() {
+                var baseUrl = "http://localhost:8080/api/cart/books";
+                $.ajax({
+                    url: baseUrl,
+                    type: 'GET',
+                    data: { 'cart_id': cartId },
+                    success: function(books) {
+                        $('#book-grid').empty(); // Clear existing entries
+                        books.forEach(function(book) {
+                            $('#book-grid').append(
+                                '<div class="book-item">' +
+                                    '<h3>' + book.title + '</h3>' +
+                                    '<p>Author: ' + book.author + '</p>' +
+                                    '<p>Price: $' + book.price + '</p>' +
+                                '</div>'
+                            );
+                        });
+                    },
+                  
+                });
+            }
+
+            viewBooksInCart(); // Load books in cart as soon as page loads
+
+            $('#checkout-form').on('submit', function(e) {
+                e.preventDefault();
+                var checkoutData = {
+                    "card-number": $('#card-number').val(),
+                    "cvv": $('#cvv').val(),
+                    "expiration-date": $('#expiration-date').val(),
+                    "card-name": $('#card-name').val()
+                };
+                $.ajax({
+                    url: 'http://localhost:8080/api/checkout', // Corrected URL
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(checkoutData),
+                    success: function(response) {
+                        console.log('Checkout successful', response);
+                        alert('Checkout successful! Thank you.');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Checkout failed', xhr, status, error);
+                        alert('Checkout failed: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

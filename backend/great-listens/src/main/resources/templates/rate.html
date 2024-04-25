@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Book</title>
+    <link rel="stylesheet" href="css/rating.css">
+</head>
+<body>
+    <div class="rating-container">
+        <div class="nav-back">
+            <button onclick="goBack()">&larr;</button>
+            <h2>Rate Selected Book</h2>
+        </div>
+        <p>Click the number you want to rate the book then hit done</p>
+        <div class="rating-options">
+            <div class="rating-option">1<br>Bad</div>
+            <div class="rating-option">2<br>Meh</div>
+            <div class="rating-option">3<br>Fine</div>
+            <div class="rating-option">4<br>Liked</div>
+            <div class="rating-option">5<br>Loved</div>
+        </div>
+        <button class="done-btn">DONE</button>
+    </div>
+    <script>
+        function goBack() {
+            window.history.back(); // This will take you back to the previous page
+        }
+    </script>
+</body>
+</html>

@@ -69,6 +69,7 @@
             if(token) { // Check if the token is a non-empty string
                 // Store the token in sessionStorage or localStorage
                 sessionStorage.setItem('authToken', token);
+                createCart();
                 // Redirect to user profile page if login is successful
                 window.location.href = '/user';
             } else {
@@ -82,7 +83,29 @@
         }
     });
 });
-
+function createCart() {
+            var authToken = sessionStorage.getItem('authToken'); // Retrieve the token from session storage
+            $.ajax({
+                url: 'http://localhost:8080/api/cart/create',
+                type: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'Authorization': 'Bearer ' + authToken  // Set the authorization header
+                },
+                data: JSON.stringify({}), // No need to send data if the API doesn't require it
+                success: function(response) {
+                    sessionStorage.setItem('cartID', response.cart_id); // Assuming cart_id is returned
+                    console.log('Cart created with ID:', response.cart_id);
+                    alert('Cart created successfully!');
+                    window.location.href = '/user'; // Redirect to user
+                },
+                error: function(xhr) {
+                    console.error('Failed to create cart:', xhr.responseText);
+                    alert('Failed to create cart: ' + xhr.responseText);
+                }
+            });
+        }
+          
           
             // Handle registration form submission
             $('#registration-form').on('submit', function(e) {

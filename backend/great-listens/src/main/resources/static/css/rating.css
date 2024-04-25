@@ -1,0 +1,73 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f0f0f0;
+}
+
+.rating-container {
+    text-align: center;
+    background: white;
+    padding: 40px; /* Increased padding */
+    width: 80%; /* Optional: Set a width percentage */
+    max-width: 600px; /* Optional: Set a maximum width */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* If you want to ensure that the container does not shrink too small on narrow screens, you can also set a minimum width */
+    min-width: 300px;
+}
+
+
+.nav-back {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.nav-back button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.rating-options {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.rating-option {
+    background: #e0e0e0;
+    padding: 15px; /* Increased padding */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 1.25em; /* Larger text */
+}
+
+.done-btn {
+    background: #d3d3d3;
+    border: none;
+    padding: 15px 30px; /* Increased padding */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    outline: none;
+    font-size: 1.25em; /* Larger text */
+}
+
+.done-btn:hover,
+.done-btn:focus { /* Add focus to maintain the effect when the button is focused */
+    background: #bababa; /* This is the color on hover */
+}
+
+.done-btn:active {
+    background: #9a9a9a; /* This is the color when the button is clicked */
+}

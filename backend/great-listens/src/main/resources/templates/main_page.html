@@ -13,8 +13,8 @@
             <nav>
                 <ul>
                     <li><a href="/login1">Sign up/Log in</a></li>
-                    <li><a href="/" class="title">Great Listens</a></li>
-                    <li><a href="/cart">View Cart</a></li>
+                    <li><a href="/" class="title">Great Listens Audiobooks</a></li>
+                    
                 </ul>
             </nav>
         </header>
@@ -30,14 +30,7 @@
                 </div>
             </div>
         </div>
-        <div class="search-bar">
-            <input type="text" id="search-input-author" placeholder="Search by author">
-            <button onclick="searchBooks('auth')">Search</button>
-            <input type="text" id="search-input-category" placeholder="Search by category">
-            <button onclick="searchBooks('cat')">Search</button>
-            <input type="text" id="search-input-id" placeholder="Search by book ID">
-            <button onclick="searchBooks('id')">Search</button>
-        </div>
+       
         <main>
             <section class="book-grid" id="book-grid">
                 <!-- Books will be loaded here by JavaScript -->
@@ -102,48 +95,7 @@
                 });
             });
         }
-        
-        // Get all books when the page loads
-       // Function to search books based on the input value
-     // Function to search books based on the input value
-function searchBooks(searchType) {
-    var inputElementId = '';
-    var searchParam = '';
-    var baseUrl = 'http://localhost:8080/api/audiobooks/search/';
 
-    if (searchType === 'auth') {
-        inputElementId = '#search-input-author';
-        searchParam = 'author';
-    } else if (searchType === 'cat') {
-        inputElementId = '#search-input-category';
-        searchParam = 'categories';
-    } else if (searchType === 'id') {
-        inputElementId = '#search-input-id';
-        searchParam = 'id';
-    }
-
-    var url = baseUrl + 1 //??
-
-    // Fetch the searched books
-    $.getJSON(url, function(books) {
-        // Clear the existing books
-        $('#book-grid').empty();
-
-        // Add the searched books to the grid
-        books.forEach(function(book) {
-            $('#book-grid').append(
-                '<div class="book-item">' +
-                    '<h3>' + book.book_name + '</h3>' +
-                    '<p>' + book.book_author + '</p>' +
-                    '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
-                    '<button onclick="addToCart(' + book.book_id + ')" class="add-to-cart-btn">Add to Cart</button>' +
-                '</div>'
-            );
-        });
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.error("Error occurred during the search: ", textStatus, errorThrown);
-    });
-}
 
         // Get all books when the page loads
         $(function() {
