@@ -12,7 +12,7 @@
         <header>
             <nav>
                 <ul>
-                    <li><a href="/login">Sign up/Log in</a></li>
+                    <li><a href="/user">View Profile</a></li>
                     <li><a href="/" class="title">Great Listens</a></li>
                     <li><a href="/cart">View Cart</a></li>
                 </ul>
@@ -65,7 +65,7 @@
                     success: function(response) {
                         alert('Account deleted successfully.');
                         sessionStorage.clear(); // Clear the session storage
-                        window.location.href = '/login'; // Redirect to login after account deletion
+                        window.location.href = '/login1'; // Redirect to login after account deletion
                     },
                     error: function(xhr, status, error) {
                         alert('Failed to delete account: ' + xhr.responseText);

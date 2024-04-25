@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="css/styles4.css">
+</head>
+<body>
+    <div class="navigation">
+        <button onclick="window.location.href='/dashboard2'">Back</button>
+        <button class="delete-account" onclick="logout()">Logout</button>
+    </div>
+    <header>
+        <h1>Hey Great Listens’s User!<br>Welcome to your Profile</h1>
+    </header>
+
+    <section class="user-info">
+        <div class="about-you">
+            <h2>About You:</h2>
+            <form id="userForm">
+                <input type="text" id="firstName" placeholder="Your First Name">
+                <input type="text" id="lastName" placeholder="Your Last Name">
+                <input type="text" id="dob" placeholder="Your DOB">
+                <input type="tel" id="phoneNumber" placeholder="Your Phone Number">
+                <input type="email" id="email" placeholder="Your Email">
+            </form>
+        </div>
+
+        <div class="past-reads">
+            <h2>Past Reads:</h2>
+            <!-- The book divs will have ratings integrated -->
+            <div class="book">
+                <span>📘 Harry Potter Book - <span class="rating">5/5</span></span>
+                <button>Click to rate or edit rating</button>
+            </div>
+            <div class="book">
+                <span>📘 Booth Book - <span class="rating">No rating yet</span></span>
+                <button>Click to rate or edit rating</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+      function fetchUserData() {
+    const token = sessionStorage.getItem('authToken');
+    if (!token) {
+        // Redirect to login page if no token is found
+        window.location.href = '/login1.html';
+        return;
+    }
+
+    fetch('http://localhost:8080/api/member/view', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token // Include the JWT in the Authorization header
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            // If the response is not ok, throw an error to be caught by the catch block
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Assuming your backend sends the user data as a JSON object with these properties
+        document.getElementById('firstName').value = data.name || '';
+        document.getElementById('lastName').value = data.name || '';
+        document.getElementById('dob').value = data.date_of_birth || '';
+        document.getElementById('phoneNumber').value = data.phone_num || '';
+        document.getElementById('email').value = data.email || '';
+
+        
+    })
+    .catch(error => {
+        console.error('Error fetching user data:', error);
+        // If there's an error (like invalid token), redirect to the login page
+        window.location.href = '/login1';
+    });
+}
+
+
+        
+function logout() {
+    if (confirm('Are you sure you want to log out?')) {
+        const token = sessionStorage.getItem('authToken');
+
+        if (token) {
+            fetch('http://localhost:8080/api/member/logout', {
+                method: 'POST', // Logout might be implemented as a POST request
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('You have been logged out.');
+                } else {
+                    console.error('Failed to invalidate token on the server');
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+            });
+        }
+
+        // Remove the JWT from sessionStorage regardless of whether the server invalidation was successful
+        sessionStorage.removeItem('authToken');
+        // Redirect to the home page or login page
+        window.location.href = '/';
+    }
+}
+
+        
+        // Call fetchUserData on page load
+        window.addEventListener('load', fetchUserData);
+      </script>
+      
+</body>
+</html>

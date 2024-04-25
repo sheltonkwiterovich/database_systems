@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.database.greatlistens.Token.TokenManager;
 import com.database.greatlistens.model.Member;
 import com.database.greatlistens.service.MemberService;
 
@@ -26,22 +28,30 @@ public class MemberController {
     private MemberService memberService;
 
     @PostMapping("/create")
-    public ResponseEntity createMember(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<String> createMember(@RequestBody Map<String, Object> requestBody) {
         String name = (String) requestBody.get("name");
         String phone_num = (String) requestBody.get("phone_num");
         String email = (String) requestBody.get("email");
         String password = (String) requestBody.get("password");
         Date date_of_birth = Date.valueOf((String) requestBody.get("date_of_birth"));
-        System.out.println("HELLO");
-        memberService.createMember(name, phone_num, email, password, date_of_birth);
 
-        return ResponseEntity.ok("Member created successfully");
+        try {
+            memberService.createMember(name, phone_num, email, password, date_of_birth);
+            return ResponseEntity.ok("Member created successfully.");
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create member: " + e.getMessage());
+        }
+
     }
 
 
     @PutMapping("/update")
-    public ResponseEntity updateMember(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity updateMember(@RequestHeader("Authorization")String token, @RequestBody Map<String, Object> requestBody) {
         String mem_id = (String) requestBody.get("mem_id");
+        if (!TokenManager.validateToken(token, mem_id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
         String name = (String) requestBody.get("name");
         String phone_num = (String) requestBody.get("phone_num");
         String email = (String) requestBody.get("email");
@@ -54,11 +64,21 @@ public class MemberController {
     }
 
     @GetMapping("/view")
-    public ResponseEntity<Member> viewMember(@RequestBody Map<String, Object> requestBody) {
-        String mem_id = (String) requestBody.get("mem_id");
-
+    public ResponseEntity<?> viewMember(@RequestHeader("Authorization") String token) {
+        // Remove 'Bearer ' prefix if it's included in the token header
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+    
+        // Use the TokenManager to retrieve the mem_id associated with the token
+        String mem_id = TokenManager.getTokenMemId(token);
+    
+        if (mem_id == null || !TokenManager.validateToken(token, mem_id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+    
         Member member = memberService.viewMember(mem_id);
-
+    
         if (member != null) {
             return ResponseEntity.ok(member);
         } else {
@@ -67,25 +87,44 @@ public class MemberController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMember(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<String> deleteMember(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> requestBody) {
         String mem_id = (String) requestBody.get("mem_id");
-
+        if (!TokenManager.validateToken(token, mem_id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
         memberService.deleteMember(mem_id);
 
         return ResponseEntity.ok("Member deleted successfully");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Member> login(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<String> login(@RequestBody Map<String, Object> requestBody) {
         String email = (String) requestBody.get("email");
         String password = (String) requestBody.get("password");
 
         Member member = memberService.login(email, password);
         if (member != null) {
-            return ResponseEntity.ok(member);
+            String token = TokenManager.generateToken(member.getMem_id());
+            return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        // Assume that the token is already formatted correctly ("Bearer " prefix removed)
+        // and that TokenManager can extract the mem_id from the token itself
+        String mem_id = TokenManager.getTokenMemId(token);
+    
+        if (mem_id == null || !TokenManager.validateToken(token, mem_id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+    
+        // Invalidate the token
+        TokenManager.invalidateToken(token);
+    
+        return ResponseEntity.ok("Logged out successfully");
     }
 
     @GetMapping("/count")

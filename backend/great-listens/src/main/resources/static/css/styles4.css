@@ -1,0 +1,105 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.navigation button {
+    padding: 5px 10px; /* Smaller padding */
+    font-size: 0.8em; /* Smaller font size */
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.about-you, .past-reads, .ratings {
+    background-color: rgb(235, 209, 248);
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.about-you {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.past-reads {
+    flex: 2;
+    margin-right: 10px;
+}
+
+.ratings {
+    flex: 1;
+}
+
+.book {
+    margin-bottom: 10px;
+}
+
+.book span {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #080707;
+    box-sizing: border-box;
+}
+
+.rating {
+    text-align: center;
+    border: 2px dashed #090909;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.rating.rated {
+    border-style: solid;
+}
+
+.rate-now {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+}
+
+.delete-account {
+    background-color: #f44336;
+    color: white;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .user-info {
+        flex-direction: column;
+    }
+    
+    .about-you, .past-reads, .ratings {
+        margin-bottom: 10px;
+    }
+}

@@ -12,17 +12,24 @@ public class ViewController {
         return "main_page";
     }
 
-    @GetMapping("/login")
+    @GetMapping("/login1")
     public String loginPage() {
         
         return "login";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboardPage() {
+   
+
+    @GetMapping("/user")
+    public String userPage() {
         
-        return "dashboard";
+        return "user";
     }
 
+    @GetMapping("/dashboard2")
+    public String dashPage() {
+        
+        return "dashboard2";
+    }
     
 }

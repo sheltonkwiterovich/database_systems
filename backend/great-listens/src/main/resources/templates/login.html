@@ -11,10 +11,10 @@
             <h2>Have An Account?</h2>
             <form id="login-form">
                 <label for="login-email">Email:</label>
-                <input type="email" id="login-email" name="email" required>
+                <input type="email" id="login-email" required>
                 
                 <label for="login-password">Password:</label>
-                <input type="password" id="login-password" name="password" required>
+                <input type="password" id="login-password" required>
                 
                 <button type="submit">Login</button>
             </form>
@@ -24,22 +24,22 @@
             <h2>New to Great Listens?</h2>
             <form id="registration-form">
                 <label for="first-name">First Name:</label>
-                <input type="text" id="first-name" name="first_name" required>
+                <input type="text" id="first-name" required>
                 
                 <label for="last-name">Last Name:</label>
-                <input type="text" id="last-name" name="last_name" required>
+                <input type="text" id="last-name" required>
                 
                 <label for="dob">Date of Birth:</label>
-                <input type="date" id="dob" name="dob" required>
+                <input type="date" id="dob" required>
                 
                 <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" name="phone" required>
+                <input type="tel" id="phone" required>
                 
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" required>
                 
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" required>
                 
                 <button type="submit">Sign Up</button>
             </form>
@@ -53,32 +53,37 @@
     <script>
         $(document).ready(function() {
             // Handle login form submission
-            $('#login-form').on('submit', function(e) {
-                e.preventDefault();
-                var loginData = {
-                    email: $('#login-email').val(),
-                    password: $('#login-password').val()
-                };
-                $.ajax({
-                    url: 'http://localhost:8080/api/member/login',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(loginData),
-                    success: function(response) {
-                        console.log('Login successful', response);
-                        alert('Login successful!');
-                         // Store the user ID in sessionStorage or localStorage
-                        sessionStorage.setItem('userID', response.userID); // Assuming response.userID contains the user's ID
-                       
-                        window.location.href = '/dashboard'; // Replace with the path to your dashboard page
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Login failed', xhr, status, error);
-                        alert('Login failed: ' + xhr.responseText);
-                    }
-                });
-            });
+          // Handle login form submission
+          $('#login-form').on('submit', function(e) {
+    e.preventDefault();
+    var loginData = {
+        email: $('#login-email').val(),
+        password: $('#login-password').val()
+    };
+    $.ajax({
+        url: 'http://localhost:8080/api/member/login',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(loginData),
+        success: function(token) { // The token is directly returned as a responsect
+            if(token) { // Check if the token is a non-empty string
+                // Store the token in sessionStorage or localStorage
+                sessionStorage.setItem('authToken', token);
+                // Redirect to user profile page if login is successful
+                window.location.href = '/user';
+            } else {
+                // Handle no token received
+                alert('Login successful but no token received.');
+            }
+        },
+        error: function(xhr) {
+            var errorMessage = xhr.status + ': ' + (xhr.responseText || "No error message provided by server");
+            alert('Login failed: ' + errorMessage);
+        }
+    });
+});
 
+          
             // Handle registration form submission
             $('#registration-form').on('submit', function(e) {
                 e.preventDefault();
@@ -97,7 +102,7 @@
                     success: function(response) {
                         console.log('Registration successful', response);
                         alert('Registration successful! You can now log in.');
-                        window.location.href = '/login'; // Replace with the path to your login page
+                        window.location.href = '/login1'; // Redirect to login page
                     },
                     error: function(xhr, status, error) {
                         console.error('Registration failed', xhr, status, error);
