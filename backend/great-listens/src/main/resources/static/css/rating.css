@@ -63,6 +63,12 @@ body {
     font-size: 1.25em; /* Larger text */
 }
 
+.selected {
+    /* your styles for highlighting the selected rating */
+    background-color: #d7a2df; /* Example style */
+    color: white;
+}
+
 .done-btn:hover,
 .done-btn:focus { /* Add focus to maintain the effect when the button is focused */
     background: #bababa; /* This is the color on hover */

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Great Listens</title>
-    <link rel="stylesheet" href="/css/styles3.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -13,8 +13,9 @@
             <nav>
                 <ul>
                     <li><a href="/user">View Profile</a></li>
-                    <li><a href="/" class="title">Great Listens</a></li>
+                    <li><a href="/" class="title">Great Listens Audiobooks</a></li>
                     <li><a href="/cart">View Cart</a></li>
+                    
                 </ul>
             </nav>
         </header>
@@ -39,38 +40,7 @@
     </div>
 
     <script>
-        $(document).ready(function() {
-        // Retrieve the user ID and username from sessionStorage
-        var userId = sessionStorage.getItem('userID');
-        var username = sessionStorage.getItem('username'); // Make sure this is set during login
-
-        // Set the welcome message with the username
-        $('#username-display').text('Welcome, ' + username);
-
-        // Handle delete account button click
-        $('#delete-account-btn').on('click', function() {
-            if(confirm('Are you sure you want to delete your account? This cannot be undone.')) {
-                $.ajax({
-                    url: 'http://localhost:8080/api/member/delete',
-                    type: 'DELETE',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ "mem_id": userId }),
-                    success: function(response) {
-                        alert('Account deleted successfully.');
-                        sessionStorage.clear(); // Clear the session storage
-                        window.location.href = '/login1'; // Redirect to login after account deletion
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Failed to delete account: ' + xhr.responseText);
-                    }
-                });
-            }
-        });
-
-
-
-
-
+        // Note the case sensitivity, function name is camelCase as per JavaScript convention
 
          // Function to fetch and display all books
          function displayBooks() {
@@ -89,6 +59,8 @@
                             '<h3>' + book.book_name + '</h3>' +
                             '<p>Author: ' + book.book_author + '</p>' +
                             '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
+                            '<button onclick="addtoCart(' + book.book_id + ')">Add to Cart</button>' +
+                           
                         '</div>'
                     );
                 });
@@ -122,20 +94,18 @@
                             '<h3>' + book.book_name + '</h3>' +
                             '<p>' + book.book_author + '</p>' +
                             '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
-                            '<button onclick="addToCart(' + book.book_id + ')" class="add-to-cart-btn">Add to Cart</button>' +
+                            '<button onclick="addtoCart(' + book.book_id + ')">Add to Cart</button>' +
+                         
                         '</div>'
                     );
                 });
             });
         }
-        
-        // Get all books when the page loads
-       // Function to search books based on the input value
-     // Function to search books based on the input value
+
 
         // Get all books when the page loads
         $(function() {
-            sortBooks('price', 'asc'); // Default sort
+            displayBooks();
         });
         
         // Function to handle "Learn more" button click
@@ -144,11 +114,40 @@
             window.location.href = '/book/' + bookId; // Navigate to the book details page
         }
 
-        $('#logout-btn').on('click', function() {
-            sessionStorage.clear(); // This will remove all the sessionStorage items
-            window.location.href = '/login'; // Redirect to the login page
-        });
-    });
+        function addtoCart(bookId) {
+         
+       
+            rating = 0.0;
+            var mem_id = sessionStorage.getItem('mem_id'); // Make sure this is the correct key
+            var authToken = sessionStorage.getItem('authToken');
+            alert(mem_id)
+            if (!mem_id || !authToken) {
+                alert('You must be logged in to add items to the cart.');
+                return;
+            }
+
+            $.ajax({
+                url: 'http://localhost:8080/api/cart/add',
+                type: 'PUT',
+                contentType: 'application/json',
+                headers: { 'Authorization': authToken },
+                data: JSON.stringify({ "mem_id": mem_id, "book_id": bookId}),
+                success: function(response) {
+                    alert('Book added to cart successfully!');
+                    console.debug('Add to cart response:', response); // Debug statement
+                },
+                error: function(xhr) {
+                    alert('Failed to add book to cart: ' + xhr.responseText);
+                    console.error('Add to cart error:', xhr.responseText); // Debug statement
+                }
+            });
+
+          
+        }
+
+
+        
+
         
     </script>
 </body>

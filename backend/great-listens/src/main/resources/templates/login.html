@@ -51,10 +51,7 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Handle login form submission
-          // Handle login form submission
-          $('#login-form').on('submit', function(e) {
+      $('#login-form').on('submit', function(e) {
     e.preventDefault();
     var loginData = {
         email: $('#login-email').val(),
@@ -65,48 +62,23 @@
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(loginData),
-        success: function(token) { // The token is directly returned as a responsect
-            if(token) { // Check if the token is a non-empty string
-                // Store the token in sessionStorage or localStorage
+        success: function(token) {
+            if(token) {
                 sessionStorage.setItem('authToken', token);
-                createCart();
-                // Redirect to user profile page if login is successful
-                window.location.href = '/user';
-            } else {
-                // Handle no token received
-                alert('Login successful but no token received.');
+                viewMember(token); // Retrieve the member details including the ID
+        
+            }
+             else {
+                alert('Login failed: No token received.');
             }
         },
         error: function(xhr) {
-            var errorMessage = xhr.status + ': ' + (xhr.responseText || "No error message provided by server");
+            var errorMessage = xhr.status + ': ' + xhr.responseText;
             alert('Login failed: ' + errorMessage);
         }
     });
 });
-function createCart() {
-            var authToken = sessionStorage.getItem('authToken'); // Retrieve the token from session storage
-            $.ajax({
-                url: 'http://localhost:8080/api/cart/create',
-                type: 'POST',
-                contentType: 'application/json',
-                headers: {
-                    'Authorization': 'Bearer ' + authToken  // Set the authorization header
-                },
-                data: JSON.stringify({}), // No need to send data if the API doesn't require it
-                success: function(response) {
-                    sessionStorage.setItem('cartID', response.cart_id); // Assuming cart_id is returned
-                    console.log('Cart created with ID:', response.cart_id);
-                    alert('Cart created successfully!');
-                    window.location.href = '/user'; // Redirect to user
-                },
-                error: function(xhr) {
-                    console.error('Failed to create cart:', xhr.responseText);
-                    alert('Failed to create cart: ' + xhr.responseText);
-                }
-            });
-        }
-          
-          
+
             // Handle registration form submission
             $('#registration-form').on('submit', function(e) {
                 e.preventDefault();
@@ -133,7 +105,62 @@ function createCart() {
                     }
                 });
             });
-        });
+
+
+            function viewMember(token) {
+    $.ajax({
+        url: 'http://localhost:8080/api/member/view',
+        type: 'GET',
+        headers: { 'Authorization': token },
+        success: function(member) {
+            sessionStorage.setItem('mem_id', member.mem_id);
+           
+            createCart(member.mem_id, token); // Now that we have the member ID, create a cart for them
+        },
+        error: function(xhr) {
+            alert('Failed to retrieve member details: ' + xhr.responseText);
+        }
+    });
+}
+function createCart(memberId, authToken) {
+    $.ajax({
+        url: 'http://localhost:8080/api/cart/create',
+        type: 'POST',
+        contentType: 'application/json',
+        headers: { 'Authorization':  authToken },
+        data: JSON.stringify({ "mem_id": memberId}),
+        success: function(cartResponse) {
+            console.log('Cart response:', cartResponse);
+            // Check if cartResponse is already the expected object
+            // If not, try parsing it as JSON
+            if (typeof cartResponse === 'string') {
+                try {
+                    cartResponse = JSON.parse(cartResponse);
+                } catch (e) {
+                    alert('Failed to parse cart response.');
+                    return;
+                }
+            }
+
+            // Now, cartResponse should be an object, so we can try to access cart_id
+            if (cartResponse && cartResponse.cart_id) {
+                sessionStorage.setItem('cart_id', cartResponse.cart_id);
+                alert('Cart created with ID: ' + cartResponse.cart_id);
+                window.location.href = '/user'; // Redirect to the user profile page after creating the cart
+            } else {
+                alert('Cart creation successful but no cart ID received.');
+            }
+
+        },
+        error: function(xhr) {
+            alert('Failed to create a cart: ' + xhr.responseText);
+        }
+    });
+}
+
+        
+
+
     </script>
 </body>
 </html>

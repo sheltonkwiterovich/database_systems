@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +9,6 @@
 </head>
 <body>
     <header>
-        <link rel="stylesheet" href="/css/styles3.css">
         <nav>
             <ul>
                 <li><a href="/dashboard2">Shop for AudioBooks</a></li>
@@ -20,12 +18,12 @@
         </nav>
     </header>
     <div class="main-container">
-        <link rel="stylesheet" href="/css/styles2.css">
         <div class="split left">
             <h2>Your Cart</h2>
             <section class="book-grid" id="book-grid">
                 <!-- Books will be loaded here by JavaScript -->
             </section>
+            <div id="cart-total"><!-- Total will be loaded here --></div>
         </div>
         
         <div class="split right">
@@ -48,57 +46,104 @@
         </div>
     </div>
     <script>
+        var bookIdsInCart = []; // Store book IDs here
+
         $(document).ready(function() {
-            var cartId = sessionStorage.getItem('cartID'); // Get cart ID from session storage
-
-            function viewBooksInCart() {
-                var baseUrl = "http://localhost:8080/api/cart/books";
-                $.ajax({
-                    url: baseUrl,
-                    type: 'GET',
-                    data: { 'cart_id': cartId },
-                    success: function(books) {
-                        $('#book-grid').empty(); // Clear existing entries
-                        books.forEach(function(book) {
-                            $('#book-grid').append(
-                                '<div class="book-item">' +
-                                    '<h3>' + book.title + '</h3>' +
-                                    '<p>Author: ' + book.author + '</p>' +
-                                    '<p>Price: $' + book.price + '</p>' +
-                                '</div>'
-                            );
-                        });
-                    },
-                  
-                });
-            }
-
-            viewBooksInCart(); // Load books in cart as soon as page loads
+            viewBooksInCart(); // Load books in cart when page loads
 
             $('#checkout-form').on('submit', function(e) {
-                e.preventDefault();
-                var checkoutData = {
-                    "card-number": $('#card-number').val(),
-                    "cvv": $('#cvv').val(),
-                    "expiration-date": $('#expiration-date').val(),
-                    "card-name": $('#card-name').val()
-                };
-                $.ajax({
-                    url: 'http://localhost:8080/api/checkout', // Corrected URL
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(checkoutData),
-                    success: function(response) {
-                        console.log('Checkout successful', response);
-                        alert('Checkout successful! Thank you.');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Checkout failed', xhr, status, error);
-                        alert('Checkout failed: ' + xhr.responseText);
-                    }
-                });
+                e.preventDefault(); // Prevent the form from submitting the default way
+                handleCheckout(); // Call the handleCheckout function
             });
         });
+
+        function viewBooksInCart() {
+            var cart_id = sessionStorage.getItem('cart_id'); // Retrieve the cart ID stored in the session
+            $.ajax({
+                url: 'http://localhost:8080/api/cart/view',
+                type: 'GET',
+                data: { 'cart_id': cart_id },
+                success: function(books) {
+                    $('#book-grid').empty(); // Clear existing entries
+                    bookIdsInCart = []; // Reset the book IDs array
+                    books.forEach(function(book) {
+                        bookIdsInCart.push(book.book_id); // Store book ID
+                        $('#book-grid').append(
+                            '<div class="book-item">' +
+                                '<h3>' + book.book_name + '</h3>' +
+                                '<p>Author: ' + book.book_author + '</p>' +
+                                '<p>Narrator: ' + book.book_narrator + '</p>' +
+                                '<button onclick="removeFromCart(' + book.book_id + ')">Remove from Cart</button>' +
+                            '</div>'
+                        );
+                    });
+                    updateCartTotal();
+                },
+                error: function(xhr) {
+                    alert('Failed to load books in cart: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function updateCartTotal() {
+            var cartId = sessionStorage.getItem('cart_id');
+            $.ajax({
+                url: 'http://localhost:8080/api/cart/total',
+                type: 'GET',
+                data: { 'cart_id': cart_id },
+                success: function(total) {
+                    $('#cart-total').text('Total: $' + total);
+                },
+                error: function(xhr) {
+                    alert('Failed to load cart total: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function removeFromCart(bookId) {
+            var cartId = sessionStorage.getItem('cart_id');
+            $.ajax({
+                url: 'http://localhost:8080/api/cart/removeBook',
+                type: 'DELETE',
+                contentType: 'application/json',
+                data: JSON.stringify({ 'cart_id': cart_id, 'book_id': bookId }),
+                success: function() {
+                    alert('Book removed from cart');
+                    viewBooksInCart(); // Refresh the cart items
+                    updateCartTotal(); // Update the total price displayed
+                },
+                error: function(xhr) {
+                    alert('Failed to remove book from cart: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function handleCheckout() {
+            var checkoutData = {
+                "cart_id": sessionStorage.getItem('cart_id'), // Ensure this matches what you set during cart creation
+                "mem_id": sessionStorage.getItem('mem_id'), // Get the member ID stored in session
+                "book_list": bookIdsInCart,
+                "card_holder": $('#card-name').val(),
+                "credit_card": $('#card-number').val(),
+                "card_name": $('#card-name').val(),
+                "expiration": $('#expiration-date').val(),
+                "csv": $('#cvv').val()
+            };
+
+            $.ajax({
+                url: 'http://localhost:8080/api/buy',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(checkoutData),
+                success: function(response) {
+                    alert('Purchase complete! Confirmation code: ' + response.conf_code);
+                    // Redirect or update UI as necessary
+                },
+                error: function(xhr) {
+                    alert('Checkout failed: ' + xhr.responseText);
+                }
+            });
+        }
     </script>
 </body>
 </html>
