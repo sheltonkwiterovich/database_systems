@@ -11,6 +11,9 @@ public class BuysId implements Serializable{
         this.book_id = book_id;
     }
 
+    public BuysId() {
+    }
+
     
 
 }

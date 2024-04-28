@@ -38,5 +38,8 @@ public interface BuysRepository extends JpaRepository<Buys, BuysId> {
     @Query(value = "DELETE FROM buys WHERE mem_id = :mem_id AND book_id = :book_id", nativeQuery = true)
     void deleteFromBuys(@Param("book_id") int book_id, @Param("mem_id") String mem_id);
 
+    @Query(value = "SELECT * FROM buys WHERE mem_id = :mem_id", nativeQuery = true)
+    List<Buys> getBooksBoughtByMember(@Param("mem_id") String mem_id);
+
 
 }

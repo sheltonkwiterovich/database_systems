@@ -1,13 +1,18 @@
 package com.database.greatlistens.service.impl;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.database.greatlistens.model.Audiobook;
+import com.database.greatlistens.model.Buys;
 import com.database.greatlistens.model.Member;
+import com.database.greatlistens.repository.AudiobookRepository;
+import com.database.greatlistens.repository.BuysRepository;
 import com.database.greatlistens.repository.MemberRepository;
 import com.database.greatlistens.service.MemberService;
 
@@ -15,6 +20,12 @@ import com.database.greatlistens.service.MemberService;
 public class MemberServiceImpl implements MemberService{
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private BuysRepository buysRepository;
+
+    @Autowired
+    private AudiobookRepository audiobookRepository;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -62,4 +73,15 @@ public class MemberServiceImpl implements MemberService{
         return memberRepository.getAllMembers();
     }
 
+    @Override
+    public List<Audiobook> getBooksBoughtByMember(String mem_id) {
+        List<Buys> booksIDsBoughtByMember = buysRepository.getBooksBoughtByMember(mem_id);
+        List<Audiobook> booksBoughtByMember = new ArrayList<>();
+        for (Buys book : booksIDsBoughtByMember) {
+            int book_id = book.getBook_id();
+            Audiobook audiobook = audiobookRepository.searchByAudiobookId(book_id);
+            booksBoughtByMember.add(audiobook);
+        }
+        return booksBoughtByMember;
+    }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.database.greatlistens.model.Audiobook;
 import com.database.greatlistens.model.Member;
 
 @Service
@@ -16,4 +17,5 @@ public interface MemberService {
     public Member login(String email, String password);
     public int getMemberCount();
     public List<Member> getAllMembers();
+    public List<Audiobook> getBooksBoughtByMember(String mem_id);
 }
