@@ -29,7 +29,7 @@
 
         <div class="past-reads">
             <h2>Past Reads:</h2>
-            <div id="past-reads-list"></div> <!-- Container for past reads -->
+            <!-- Dynamically populated list of past-read books -->
         </div>
     </section>
     
@@ -62,7 +62,7 @@
                 document.getElementById('dob').value = data.date_of_birth || '';
                 document.getElementById('phoneNumber').value = data.phone_num || '';
                 document.getElementById('email').value = data.email || '';
-                displayBooks(token); // Fetch the books after the user data is loaded
+                fetchUserBooks(token); // Fetch the books after the user data is loaded
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
@@ -71,34 +71,31 @@
             });
         }
 
-        function displayBooks(token) {
-            const url = 'http://localhost:8080/api/audiobooks';
-
-            // Make the AJAX call to get the books
-            fetch(url, {
+        function fetchUserBooks(token) {
+            fetch('http://localhost:8080/api/buy', { // Use the correct API endpoint to get the books purchased by the user
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json'
+                    'Authorization': 'Bearer ' + token
                 }
             })
             .then(response => response.json())
             .then(books => {
-                // Clear the existing past reads list
-                const pastReadsList = document.getElementById('past-reads-list');
-                pastReadsList.innerHTML = '';
-
-                // Add past reads to the list
+                const pastReadsContainer = document.querySelector('.past-reads');
+                // Clear the previous list
+                pastReadsContainer.innerHTML = '<h2>Past Reads:</h2>';
                 books.forEach(book => {
-                    pastReadsList.innerHTML += `
-                        <div class="book-item">
-                            <h3>${book.book_name}</h3>
-                            <p>Author: ${book.book_author}</p>
-                            <button onclick="rateBook(${book.book_id})">Rate book</button>
-                        </div>`;
+                    const bookElement = document.createElement('div');
+                    bookElement.classList.add('book');
+                    bookElement.innerHTML = `
+                        <span>📘 ${book.title} - <span class="rating">${book.rating || 'No rating yet'}</span></span>
+                        <button onclick="rateBook(${book.id})">Click to rate or edit rating</button>
+                    `;
+                    pastReadsContainer.appendChild(bookElement);
                 });
             })
-            .catch(error => console.error('Error fetching past reads:', error));
+            .catch(error => {
+                console.error('Error fetching books:', error);
+            });
         }
 
         function rateBook(bookId) {

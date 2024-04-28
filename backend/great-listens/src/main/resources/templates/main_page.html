@@ -39,28 +39,33 @@
     </div>
 
     <script>
-         // Function to fetch and display all books
-         function displayBooks() {
-            // URL of the API endpoint
-            var url = 'http://localhost:8080/api/audiobooks';
-            
-            // Fetch all the books
-            $.getJSON(url, function(books) {
-                // Clear the existing books
-                $('#book-grid').empty();
-                
-                // Add all books to the grid
-                books.forEach(function(book) {
-                    $('#book-grid').append(
-                        '<div class="book-item">' +
-                            '<h3>' + book.book_name + '</h3>' +
-                            '<p>Author: ' + book.book_author + '</p>' +
-                            '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
-                        '</div>'
-                    );
-                });
-            });
-        }
+    function displayBooks() {
+
+    var url = 'http://localhost:8080/api/audiobooks';
+
+    $.getJSON(url, function(books) {
+
+        $('#book-grid').empty();
+    
+        books.forEach(function(book) {
+        var bookHTML = 
+            '<div class="book-item">' +
+                '<h3>' + book.book_name + '</h3>' +
+                '<p>Author: ' + book.book_author + '</p>' +
+                '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
+                '<button onclick="addtoCart(' + book.book_id + ')">Add to Cart</button>' +
+                '<div id="details-' + book.book_id + '" class="book-details" style="display:none;">' +
+                    '<p>Narrator: ' + book.book_narrator + '</p>' +
+                    '<p>Categories: ' + book.categories + '</p>' +
+                    '<p>Rating: ' + book.rating + '</p>' +
+                    '<p>Price: $' + book.price.toFixed(2) + '</p>' +
+                    '<p>Listening Time: ' + book.listening_time + ' minutes</p>' +
+                '</div>' +
+            '</div>';
+        $('#book-grid').append(bookHTML);
+    });
+});
+}
         
         // Sort books based on the sort field and order
        // Sort books based on the sort field and order
@@ -90,7 +95,7 @@
                     $('#book-grid').append(bookHTML);
                 });
             });
-        }s
+        }
 
         // Get all books when the page loads
         $(function() {
