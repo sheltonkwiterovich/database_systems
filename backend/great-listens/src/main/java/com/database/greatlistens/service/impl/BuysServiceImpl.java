@@ -27,6 +27,9 @@ public class BuysServiceImpl implements BuysService{
     @Transactional
     private int makePayment(String credit_card, String card_name, Date expiration, String csv) {
         int pay_id = paymentRepository.getPaymentCount();
+        while (paymentRepository.paymentExists(pay_id) != 0) {
+            pay_id +=1;
+        }
         paymentRepository.insertIntoPayment(pay_id, credit_card, card_name, expiration, csv);
         return pay_id;
     }
@@ -34,6 +37,9 @@ public class BuysServiceImpl implements BuysService{
     @Transactional
     private int createConfirmation(int pay_id, String card_holder) {
         int conf_code = confirmationRepository.getConfirmationCount();
+        while (confirmationRepository.confirmationExists(conf_code) != 0) {
+            conf_code +=1;
+        }
         confirmationRepository.insertConfirmation(conf_code, pay_id, card_holder);
         return conf_code;
     }

@@ -36,5 +36,8 @@ public interface ConfirmationRepository extends JpaRepository<Confirmation, Inte
     // delete confiration
     @Query(value = "DELETE FROM confirmation WHERE conf_code = :conf_code", nativeQuery = true)
     void deleteConfirmation(@Param("conf_code") int conf_code);
+
+    @Query(value = "SELECT COUNT(*) AS confirmation_count FROM confirmation WHERE conf_code = :conf_code", nativeQuery = true)
+    int confirmationExists(@Param("conf_code") int conf_code); 
 }
 

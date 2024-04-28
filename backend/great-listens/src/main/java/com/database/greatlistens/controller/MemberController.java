@@ -65,7 +65,7 @@ public class MemberController {
     }
 
     @GetMapping("/view")
-    public ResponseEntity<?> viewMember(@RequestHeader("Authorization") String token) {
+    public ResponseEntity viewMember(@RequestHeader("Authorization") String token) {
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
         }

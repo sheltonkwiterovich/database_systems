@@ -42,5 +42,8 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
     // get cart_total
     @Query(value = "SELECT cart_total FROM cart where cart_id = :cart_id", nativeQuery = true)
     double getCartTotal(@Param("cart_id") int cart_id);
+
+    @Query(value = "SELECT COUNT(*) AS cart_count FROM cart WHERE cart_id = :cart_id", nativeQuery = true)
+    int cartExists(@Param("cart_id") int cart_id); 
 }
 

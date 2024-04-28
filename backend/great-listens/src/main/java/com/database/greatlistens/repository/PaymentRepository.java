@@ -37,4 +37,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     // delete payment
     @Query(value = "DELETE FROM payment WHERE pay_id = :pay_id", nativeQuery = true)
     void deletePayment(@Param("pay_id") int pay_id);
+
+    @Query(value = "SELECT COUNT(*) AS payment_count FROM payment WHERE pay_id = :pay_id", nativeQuery = true)
+    int paymentExists(@Param("pay_id") int pay_id); 
 }

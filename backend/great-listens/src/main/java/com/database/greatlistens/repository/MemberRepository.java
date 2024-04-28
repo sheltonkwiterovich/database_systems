@@ -49,5 +49,8 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     @Query(value = "DELETE FROM member WHERE mem_id = :mem_id", nativeQuery = true)
     @Modifying
     void deleteMember(@Param("mem_id") String mem_id);
+
+    @Query(value = "SELECT COUNT(*) AS member_count FROM member WHERE mem_id = :mem_id", nativeQuery = true)
+    int memberExists(@Param("mem_id") String mem_id); 
 }
 

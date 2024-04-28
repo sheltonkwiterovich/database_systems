@@ -28,6 +28,9 @@ public class CartServiceImpl implements CartService{
     @Transactional
     public Cart createCart(String mem_id) {
         int cart_id = cartRepository.getCartCount();
+        while (cartRepository.cartExists(cart_id) != 0) {
+            cart_id +=1;
+        }
         cartRepository.createCart(cart_id, mem_id, 0.0);
         Cart cart = cartRepository.searchByCartId(cart_id);
         return cart;

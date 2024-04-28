@@ -32,8 +32,11 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public void createMember(String name, String phone_num, String email, String password, Date date_of_birth) {
         int id_num = memberRepository.getMemberCount();
-        System.out.println(id_num);
         String mem_id = "M" + Integer.toString(id_num);
+        while (memberRepository.memberExists(mem_id) != 0) {
+            id_num +=1;
+            mem_id = "M" + Integer.toString(id_num);
+        }
         String encryptedPassword = passwordEncoder.encode(password);
         memberRepository.insertIntoMember(mem_id, name, phone_num, email, encryptedPassword, date_of_birth);
     }
