@@ -42,6 +42,7 @@ public class CartController {
         return ResponseEntity.ok(cart);
     }
 
+
     @PutMapping("/add")
     @ResponseBody
     public ResponseEntity<String> addToCart(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> requestBody) {
@@ -135,7 +136,7 @@ public ResponseEntity<?> getBooksInCart(@RequestHeader("Authorization") String t
      
      
 
-    @DeleteMapping("/removeBook")
+     @DeleteMapping("/removeBook")
     public ResponseEntity<String> removeBookFromCart(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> requestBody) {
         String memId = (String) requestBody.get("mem_id");
         if (!TokenManager.validateToken(token, memId)) {

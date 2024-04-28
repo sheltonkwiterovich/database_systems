@@ -138,15 +138,16 @@
         console.log("Attempting to checkout with data:", checkoutData); // Debug statement
 
         $.ajax({
-            url: 'http://localhost:8080/api/buy',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(checkoutData),
-            success: function(response) {
-                console.log("Checkout successful:", response); // Debug statement
-                alert('Purchase complete! Confirmation code: ' + response.conf_code);
-                $('.message-display').text('Purchase successful! Confirmation code: ' + response.conf_code);
-                window.location.href = '/user';
+                url: 'http://localhost:8080/api/buy',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(checkoutData),
+                success: function(response) {
+                    console.log("Checkout successful:", response);
+                    alert('Purchase complete! Confirmation code: ' + response.conf_code);
+                    bookIdsInCart.forEach(bookId => removeBookFromCart(bookId)); // Call remove function for each book
+                    window.location.href = '/user';
+                
 
         },
         error: function(xhr) {
@@ -156,6 +157,27 @@
         }
     });
 }
+
+function removeBookFromCart(bookId) {
+            var mem_id = sessionStorage.getItem('mem_id');
+            var cart_id = parseInt(sessionStorage.getItem('cart_id'));
+            var authToken = sessionStorage.getItem('authToken');
+
+            $.ajax({
+                url: 'http://localhost:8080/api/removeBook',
+                type: 'DELETE',
+                contentType: 'application/json',
+                headers: { 'Authorization': authToken },
+                data: JSON.stringify({ "mem_id": mem_id, "cart_id": cart_id, "book_id": bookId }),
+                success: function(response) {
+                    console.log("Book removed from cart:", response);
+                    fetchBooksInCart(); // Update the cart display
+                },
+                error: function(xhr) {
+                    console.error("Failed to remove book from cart:", xhr.responseText);
+                }
+            });
+        }
 
         
     </script>
