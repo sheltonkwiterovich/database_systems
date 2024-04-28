@@ -23,7 +23,7 @@
             <section class="book-grid" id="book-grid">
                 <!-- Books will be loaded here by JavaScript -->
             </section>
-            <div id="cart-total"><!-- Total will be loaded here --></div>
+            <div id="cart-total-display" style="color: red; font-weight: bold;">Total: </div>
         </div>
         
         <div class="split right">
@@ -46,104 +46,118 @@
         </div>
     </div>
     <script>
-        var bookIdsInCart = []; // Store book IDs here
+    var bookIdsInCart = []; 
 
-        $(document).ready(function() {
-            viewBooksInCart(); // Load books in cart when page loads
-
-            $('#checkout-form').on('submit', function(e) {
-                e.preventDefault(); // Prevent the form from submitting the default way
-                handleCheckout(); // Call the handleCheckout function
+     $(document).ready(function() {
+        fetchBooksInCart();
+        getCartTotal();
+          
+        $('#checkout-form').on('submit', function(e) {
+            e.preventDefault(); 
+            handleCheckout(); 
             });
         });
 
-        function viewBooksInCart() {
-            var cart_id = sessionStorage.getItem('cart_id'); // Retrieve the cart ID stored in the session
-            $.ajax({
-                url: 'http://localhost:8080/api/cart/view',
-                type: 'GET',
-                data: { 'cart_id': cart_id },
-                success: function(books) {
-                    $('#book-grid').empty(); // Clear existing entries
-                    bookIdsInCart = []; // Reset the book IDs array
-                    books.forEach(function(book) {
-                        bookIdsInCart.push(book.book_id); // Store book ID
-                        $('#book-grid').append(
-                            '<div class="book-item">' +
-                                '<h3>' + book.book_name + '</h3>' +
-                                '<p>Author: ' + book.book_author + '</p>' +
-                                '<p>Narrator: ' + book.book_narrator + '</p>' +
-                                '<button onclick="removeFromCart(' + book.book_id + ')">Remove from Cart</button>' +
-                            '</div>'
-                        );
-                    });
-                    updateCartTotal();
-                },
-                error: function(xhr) {
-                    alert('Failed to load books in cart: ' + xhr.responseText);
-                }
-            });
+
+    function getCartTotal() {
+        var mem_id = sessionStorage.getItem('mem_id'); 
+        var cart_id = parseInt(sessionStorage.getItem('cart_id'));
+        var authToken = sessionStorage.getItem('authToken');
+        $.ajax({
+            url: 'http://localhost:8080/api/cart/total?mem_id=' + encodeURIComponent(mem_id) + '&cart_id=' + encodeURIComponent(cart_id),
+            type: 'GET',
+            headers: { 'Authorization': authToken },
+            success: function(response) {
+                var cartTotal = response.total || response; 
+                $('#cart-total-display').html('Total: $' + cartTotal); 
+        },
+            error: function(xhr) {
+                alert('Failed to retrieve cart total: ' + xhr.responseText);
+                console.error('Cart total error:', xhr.responseText);
+        }
+    });
+}
+
+    function fetchBooksInCart() {
+        const authToken = sessionStorage.getItem('authToken');
+        const cart_id = sessionStorage.getItem('cart_id');
+        if (!cart_id) {
+            console.error('No cart_id found in session storage.');
+            return; 
         }
 
-        function updateCartTotal() {
-            var cartId = sessionStorage.getItem('cart_id');
-            $.ajax({
-                url: 'http://localhost:8080/api/cart/total',
-                type: 'GET',
-                data: { 'cart_id': cart_id },
-                success: function(total) {
-                    $('#cart-total').text('Total: $' + total);
-                },
-                error: function(xhr) {
-                    alert('Failed to load cart total: ' + xhr.responseText);
-                }
-            });
+        fetch(`http://localhost:8080/api/cart/books?cart_id=${encodeURIComponent(cart_id)}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${authToken}`
         }
-
-        function removeFromCart(bookId) {
-            var cartId = sessionStorage.getItem('cart_id');
-            $.ajax({
-                url: 'http://localhost:8080/api/cart/removeBook',
-                type: 'DELETE',
-                contentType: 'application/json',
-                data: JSON.stringify({ 'cart_id': cart_id, 'book_id': bookId }),
-                success: function() {
-                    alert('Book removed from cart');
-                    viewBooksInCart(); // Refresh the cart items
-                    updateCartTotal(); // Update the total price displayed
-                },
-                error: function(xhr) {
-                    alert('Failed to remove book from cart: ' + xhr.responseText);
-                }
-            });
+    })
+        .then(response => {
+            console.log("Received response:", response);
+            if (!response.ok) {
+                console.error('Response not OK, status:', response.status);
+                throw new Error('Network response was not ok: ' + response.statusText);
         }
+            return response.json();
+    })
+        .then(books => {
+            const bookGrid = document.getElementById('book-grid');
+            bookGrid.innerHTML = '';
+            books.forEach(book => {
+                const bookElement = document.createElement('div');
+                bookElement.className = 'book';
+                bookElement.innerHTML = `
+                <h3>${book.book_name}</h3>
+                <p>Author: ${book.book_author}</p>
+                <p>Narrator: ${book.book_narrator}</p>
+                <p>Categories: ${book.categories}</p>
+                <p>Rating: ${book.rating}</p>
+                <p>Price: $${book.price.toFixed(2)}</p>
+                <p>Listening Time: ${book.listening_time} minutes</p>
+            `;
+                bookGrid.appendChild(bookElement);
+        });
+    })
+        .catch(error => {
+            console.error('Error fetching books data:', error);
+    });
+}
 
-        function handleCheckout() {
-            var checkoutData = {
-                "cart_id": sessionStorage.getItem('cart_id'), // Ensure this matches what you set during cart creation
-                "mem_id": sessionStorage.getItem('mem_id'), // Get the member ID stored in session
-                "book_list": bookIdsInCart,
-                "card_holder": $('#card-name').val(),
-                "credit_card": $('#card-number').val(),
-                "card_name": $('#card-name').val(),
-                "expiration": $('#expiration-date').val(),
-                "csv": $('#cvv').val()
-            };
+    function handleCheckout() {
+        var checkoutData = {
+            "cart_id": parseInt(sessionStorage.getItem('cart_id')), // Make sure cart_id is an integer
+            "mem_id": sessionStorage.getItem('mem_id'), // Get the member ID stored in session
+        "book_list": bookIdsInCart,
+            "card_holder": $('#card-name').val(),
+            "credit_card": $('#card-number').val(),
+        "card_name": $('#card-name').val(),
+            "expiration": $('#expiration-date').val(),
+            "csv": $('#cvv').val()
+    };
 
-            $.ajax({
-                url: 'http://localhost:8080/api/buy',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(checkoutData),
-                success: function(response) {
-                    alert('Purchase complete! Confirmation code: ' + response.conf_code);
-                    // Redirect or update UI as necessary
-                },
-                error: function(xhr) {
-                    alert('Checkout failed: ' + xhr.responseText);
-                }
-            });
+        console.log("Attempting to checkout with data:", checkoutData); // Debug statement
+
+        $.ajax({
+            url: 'http://localhost:8080/api/buy',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(checkoutData),
+            success: function(response) {
+                console.log("Checkout successful:", response); // Debug statement
+                alert('Purchase complete! Confirmation code: ' + response.conf_code);
+                $('.message-display').text('Purchase successful! Confirmation code: ' + response.conf_code);
+                window.location.href = '/user';
+
+        },
+        error: function(xhr) {
+            console.error("Checkout failed:", xhr.responseText); // Debug statement
+            alert('Checkout failed: ' + xhr.responseText);
+            $('.message-display').text('Checkout failed. Please try again.');
         }
+    });
+}
+
+        
     </script>
 </body>
 </html>

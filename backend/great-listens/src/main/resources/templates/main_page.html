@@ -63,49 +63,44 @@
         }
         
         // Sort books based on the sort field and order
-        function sortBooks(sortField, sortOrder) {
-    var baseUrl = 'http://localhost:8080/api/audiobooks/sort/';
-    var sortPath = '';
+       // Sort books based on the sort field and order
+       function sortBooks(sortField, sortOrder) {
+            var baseUrl = 'http://localhost:8080/api/audiobooks/sort/';
+            var sortPath = (sortField === 'price' ? 'price/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low') :
+                            'listening-time/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low'));
+            var url = baseUrl + sortPath;
 
-    // Check which sortField is being used and set the corresponding API path
-    if (sortField === 'price') {
-        sortPath = 'price/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
-    } else if (sortField === 'time') {
-        sortPath = 'listening-time/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
-    }
-
-    // Construct the full URL
-    var url = baseUrl + sortPath;
-
-    // Fetch the sorted books
-    $.getJSON(url, function(books) {
-                // Clear the existing books
+            $.getJSON(url, function(books) {
                 $('#book-grid').empty();
-                
-                // Add the sorted books to the grid
                 books.forEach(function(book) {
-                    $('#book-grid').append(
+                    var bookHTML = 
                         '<div class="book-item">' +
                             '<h3>' + book.book_name + '</h3>' +
-                            '<p>' + book.book_author + '</p>' +
+                            '<p>Author: ' + book.book_author + '</p>' +
                             '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
-                         
-                        '</div>'
-                    );
+                            '<button onclick="addtoCart(' + book.book_id + ')">Add to Cart</button>' +
+                            '<div id="details-' + book.book_id + '" class="book-details" style="display:none;">' +
+                                '<p>Narrator: ' + book.book_narrator + '</p>' +
+                                '<p>Categories: ' + book.categories + '</p>' +
+                                '<p>Rating: ' + book.rating + '</p>' +
+                                '<p>Price: $' + book.price.toFixed(2) + '</p>' +
+                                '<p>Listening Time: ' + book.listening_time + ' minutes</p>' +
+                            '</div>' +
+                        '</div>';
+                    $('#book-grid').append(bookHTML);
                 });
             });
-        }
-
+        }s
 
         // Get all books when the page loads
         $(function() {
-            sortBooks('price', 'asc'); // Default sort
+            displayBooks(); // Default sort
         });
         
         // Function to handle "Learn more" button click
     // Function to handle "Learn more" button click
     function learnMore(bookId) {
-            window.location.href = '/book/' + bookId; // Navigate to the book details page
+            $('#details-' + bookId).toggle(); // Toggle visibility of the details div
         }
         
     </script>

@@ -65,12 +65,11 @@ public class MemberController {
 
     @GetMapping("/view")
     public ResponseEntity<?> viewMember(@RequestHeader("Authorization") String token) {
-        // Remove 'Bearer ' prefix if it's included in the token header
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
     
-        // Use the TokenManager to retrieve the mem_id associated with the token
+    
         String mem_id = TokenManager.getTokenMemId(token);
     
         if (mem_id == null || !TokenManager.validateToken(token, mem_id)) {
@@ -113,8 +112,7 @@ public class MemberController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
-        // Assume that the token is already formatted correctly ("Bearer " prefix removed)
-        // and that TokenManager can extract the mem_id from the token itself
+
         String mem_id = TokenManager.getTokenMemId(token);
     
         if (mem_id == null || !TokenManager.validateToken(token, mem_id)) {

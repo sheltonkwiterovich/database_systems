@@ -51,36 +51,37 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      $('#login-form').on('submit', function(e) {
-    e.preventDefault();
-    var loginData = {
-        email: $('#login-email').val(),
-        password: $('#login-password').val()
+
+    $('#login-form').on('submit', function(e) {
+        e.preventDefault();
+        var loginData = {
+            email: $('#login-email').val(),
+            password: $('#login-password').val()
     };
-    $.ajax({
-        url: 'http://localhost:8080/api/member/login',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(loginData),
-        success: function(token) {
-            if(token) {
-                sessionStorage.setItem('authToken', token);
-                viewMember(token); // Retrieve the member details including the ID
+        $.ajax({
+            url: 'http://localhost:8080/api/member/login',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(loginData),
+            success: function(token) {
+                if(token) {
+                    sessionStorage.setItem('authToken', token);
+                    viewMember(token);
         
             }
-             else {
-                alert('Login failed: No token received.');
+                else {
+                    alert('Login failed: No token received.');
             }
         },
-        error: function(xhr) {
-            var errorMessage = xhr.status + ': ' + xhr.responseText;
-            alert('Login failed: ' + errorMessage);
+            error: function(xhr) {
+                var errorMessage = xhr.status + ': ' + xhr.responseText;
+                alert('Login failed: ' + errorMessage);
         }
     });
 });
 
-            // Handle registration form submission
-            $('#registration-form').on('submit', function(e) {
+ 
+    $('#registration-form').on('submit', function(e) {
                 e.preventDefault();
                 var registrationData = {
                     "name": $('#first-name').val() + ' ' + $('#last-name').val(),
@@ -97,7 +98,7 @@
                     success: function(response) {
                         console.log('Registration successful', response);
                         alert('Registration successful! You can now log in.');
-                        window.location.href = '/login1'; // Redirect to login page
+                        window.location.href = '/login1'; 
                     },
                     error: function(xhr, status, error) {
                         console.error('Registration failed', xhr, status, error);
@@ -107,23 +108,24 @@
             });
 
 
-            function viewMember(token) {
-    $.ajax({
-        url: 'http://localhost:8080/api/member/view',
-        type: 'GET',
-        headers: { 'Authorization': token },
-        success: function(member) {
-            sessionStorage.setItem('mem_id', member.mem_id);
+    function viewMember(token) {
+            $.ajax({
+            url: 'http://localhost:8080/api/member/view',
+            type: 'GET',
+            headers: { 'Authorization': token },
+            success: function(member) {
+                sessionStorage.setItem('mem_id', member.mem_id);
            
-            createCart(member.mem_id, token); // Now that we have the member ID, create a cart for them
+            createCart(member.mem_id, token); 
         },
-        error: function(xhr) {
-            alert('Failed to retrieve member details: ' + xhr.responseText);
+            error: function(xhr) {
+                alert('Failed to retrieve member details: ' + xhr.responseText);
         }
     });
 }
-function createCart(memberId, authToken) {
-    $.ajax({
+
+    function createCart(memberId, authToken) {
+        $.ajax({
         url: 'http://localhost:8080/api/cart/create',
         type: 'POST',
         contentType: 'application/json',
@@ -131,8 +133,6 @@ function createCart(memberId, authToken) {
         data: JSON.stringify({ "mem_id": memberId}),
         success: function(cartResponse) {
             console.log('Cart response:', cartResponse);
-            // Check if cartResponse is already the expected object
-            // If not, try parsing it as JSON
             if (typeof cartResponse === 'string') {
                 try {
                     cartResponse = JSON.parse(cartResponse);
@@ -142,11 +142,10 @@ function createCart(memberId, authToken) {
                 }
             }
 
-            // Now, cartResponse should be an object, so we can try to access cart_id
             if (cartResponse && cartResponse.cart_id) {
                 sessionStorage.setItem('cart_id', cartResponse.cart_id);
                 alert('Cart created with ID: ' + cartResponse.cart_id);
-                window.location.href = '/user'; // Redirect to the user profile page after creating the cart
+                window.location.href = '/user'; 
             } else {
                 alert('Cart creation successful but no cart ID received.');
             }

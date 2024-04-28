@@ -27,74 +27,70 @@
                     <a href="#" onclick="sortBooks('price', 'desc')">Sort by Price High to Low</a>
                     <a href="#" onclick="sortBooks('time', 'asc')">Sort by Listening Time Low to High</a>
                     <a href="#" onclick="sortBooks('time', 'desc')">Sort by Listening Time High to Low</a>
-                    <!-- More sort/filter options -->
+    
                 </div>
             </div>
         </div>
        
         <main>
             <section class="book-grid" id="book-grid">
-                <!-- Books will be loaded here by JavaScript -->
             </section>
         </main>
     </div>
 
     <script>
-        // Note the case sensitivity, function name is camelCase as per JavaScript convention
 
-         // Function to fetch and display all books
-         function displayBooks() {
-            // URL of the API endpoint
+
+        function displayBooks() {
+
             var url = 'http://localhost:8080/api/audiobooks';
             
-            // Fetch all the books
             $.getJSON(url, function(books) {
-                // Clear the existing books
+ 
                 $('#book-grid').empty();
                 
-                // Add all books to the grid
                 books.forEach(function(book) {
-                    $('#book-grid').append(
+                    var bookHTML = 
                         '<div class="book-item">' +
                             '<h3>' + book.book_name + '</h3>' +
                             '<p>Author: ' + book.book_author + '</p>' +
                             '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
                             '<button onclick="addtoCart(' + book.book_id + ')">Add to Cart</button>' +
-                           
-                        '</div>'
-                    );
+                            '<div id="details-' + book.book_id + '" class="book-details" style="display:none;">' +
+                                '<p>Narrator: ' + book.book_narrator + '</p>' +
+                                '<p>Categories: ' + book.categories + '</p>' +
+                                '<p>Rating: ' + book.rating + '</p>' +
+                                '<p>Price: $' + book.price.toFixed(2) + '</p>' +
+                                '<p>Listening Time: ' + book.listening_time + ' minutes</p>' +
+                            '</div>' +
+                        '</div>';
+                    $('#book-grid').append(bookHTML);
                 });
             });
         }
         
-        // Sort books based on the sort field and order
         function sortBooks(sortField, sortOrder) {
-    var baseUrl = 'http://localhost:8080/api/audiobooks/sort/';
-    var sortPath = '';
+            var baseUrl = 'http://localhost:8080/api/audiobooks/sort/';
+            var sortPath = '';
 
-    // Check which sortField is being used and set the corresponding API path
-    if (sortField === 'price') {
-        sortPath = 'price/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
-    } else if (sortField === 'time') {
-        sortPath = 'listening-time/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
+
+            if (sortField === 'price') {
+                sortPath = 'price/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
+            } else if (sortField === 'time') {
+                sortPath = 'listening-time/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
     }
 
-    // Construct the full URL
-    var url = baseUrl + sortPath;
+            var url = baseUrl + sortPath;
 
-    // Fetch the sorted books
-    $.getJSON(url, function(books) {
-                // Clear the existing books
+            $.getJSON(url, function(books) {
                 $('#book-grid').empty();
-                
-                // Add the sorted books to the grid
                 books.forEach(function(book) {
                     $('#book-grid').append(
                         '<div class="book-item">' +
                             '<h3>' + book.book_name + '</h3>' +
                             '<p>' + book.book_author + '</p>' +
                             '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
-                            '<button onclick="addtoCart(' + book.book_id + ')">Add to Cart</button>' +
+                            '<button onclick="addToCart(' + book.book_id + ')">Add to Cart</button>' +
                          
                         '</div>'
                     );
@@ -102,52 +98,96 @@
             });
         }
 
-
-        // Get all books when the page loads
-        $(function() {
+    $(function() {
             displayBooks();
         });
         
-        // Function to handle "Learn more" button click
-    // Function to handle "Learn more" button click
     function learnMore(bookId) {
-            window.location.href = '/book/' + bookId; // Navigate to the book details page
+            $('#details-' + bookId).toggle(); 
         }
 
-        function addtoCart(bookId) {
-         
-       
-            rating = 0.0;
-            var mem_id = sessionStorage.getItem('mem_id'); // Make sure this is the correct key
-            var authToken = sessionStorage.getItem('authToken');
-            alert(mem_id)
-            if (!mem_id || !authToken) {
-                alert('You must be logged in to add items to the cart.');
-                return;
+    function getCartTotal(callback) {
+        var mem_id = sessionStorage.getItem('mem_id'); 
+        var cart_id = parseInt(sessionStorage.getItem('cart_id')); 
+        var authToken = sessionStorage.getItem('authToken'); 
+
+        if (!mem_id || !authToken || !cart_id) {
+            alert('You must be logged in and have a cart to view the total.');
+            return;
+    }
+
+        $.ajax({
+            url: 'http://localhost:8080/api/cart/total?mem_id=' + encodeURIComponent(mem_id) + '&cart_id=' + encodeURIComponent(cart_id),
+            type: 'GET',
+            headers: { 'Authorization': authToken },
+            success: function(response) {
+            var cartTotal = response.total || response; 
+
+            if (callback) {
+                callback(cartTotal); 
             }
-
-            $.ajax({
-                url: 'http://localhost:8080/api/cart/add',
-                type: 'PUT',
-                contentType: 'application/json',
-                headers: { 'Authorization': authToken },
-                data: JSON.stringify({ "mem_id": mem_id, "book_id": bookId}),
-                success: function(response) {
-                    alert('Book added to cart successfully!');
-                    console.debug('Add to cart response:', response); // Debug statement
-                },
-                error: function(xhr) {
-                    alert('Failed to add book to cart: ' + xhr.responseText);
-                    console.error('Add to cart error:', xhr.responseText); // Debug statement
-                }
-            });
-
-          
+        },
+            error: function(xhr) {
+                alert('Failed to retrieve cart total: ' + xhr.responseText);
+                console.error('Cart total error:', xhr.responseText);
         }
+    });
+}
 
 
-        
 
+    function addToCart(bookId) {
+        var mem_id = sessionStorage.getItem('mem_id');
+        var cart_id = sessionStorage.getItem('cart_id');
+        var authToken = sessionStorage.getItem('authToken');
+
+  
+        getCartTotal(function(cartTotal) {
+            $.ajax({
+                url: 'http://localhost:8080/api/audiobooks/search/id/' + bookId,
+                type: 'GET',
+                headers: { 'Authorization': authToken },
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(bookDetails) {
+                //alert("hi");
+                var dataToAdd = {
+                    "mem_id": String(mem_id),
+                    "book_id": parseInt(bookDetails.book_id, 10),
+                    "book_name": String(bookDetails.book_name),
+                    "book_author": String(bookDetails.book_author),
+                    "book_narrator": String(bookDetails.book_narrator),
+                    "categories": String(bookDetails.categories),
+                    "rating": bookDetails.rating % 1 === 0 ? bookDetails.rating + 0.05 : bookDetails.rating,
+                    "price": bookDetails.price % 1 === 0 ? bookDetails.price + 0.0 : bookDetails.price,
+                    "listening_time": parseInt(bookDetails.listening_time, 10),
+                    "cart_id": parseInt(cart_id, 10),
+                    "cart_total": cartTotal % 1 === 0 ? cartTotal + 0.05 : cartTotal
+                    };
+
+                $.ajax({
+                    url: 'http://localhost:8080/api/cart/add',
+                    type: 'PUT',
+                    headers: { 'Authorization': authToken },
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToAdd),
+                    success: function(response) {
+                        alert('Book added to cart successfully!');
+                        console.debug('Add to cart response:', response);
+                    },
+                    error: function(xhr) {
+                        alert('Failed to add book to cart: ' + xhr.responseText);
+                        console.error('Add to cart error:', xhr.responseText);
+                    }
+                });
+            },
+                error: function(xhr) {
+                    alert('Failed to retrieve book details: ' + xhr.responseText);
+                    console.error('Fetch book details error:', xhr.responseText);
+            }
+        });
+    });
+}
         
     </script>
 </body>
