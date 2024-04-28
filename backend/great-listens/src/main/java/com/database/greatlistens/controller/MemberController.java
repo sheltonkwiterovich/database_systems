@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.database.greatlistens.Token.TokenManager;
+import com.database.greatlistens.model.Audiobook;
 import com.database.greatlistens.model.Member;
 import com.database.greatlistens.service.MemberService;
 
@@ -134,6 +135,13 @@ public class MemberController {
     @ResponseBody
     public List<Member> getAllMembers() {
         return memberService.getAllMembers();
+    }
+
+    @GetMapping("/booksBought")
+    @ResponseBody
+    public List<Audiobook> getBookBoughtByMember(@RequestHeader("Authorization")String token, @RequestBody Map<String, Object> requestBody) {
+        String mem_id = (String) requestBody.get("mem_id");
+        return memberService.getBooksBoughtByMember(mem_id);
     }
 }
     
