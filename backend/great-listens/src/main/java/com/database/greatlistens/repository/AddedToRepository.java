@@ -33,10 +33,12 @@ public interface AddedToRepository extends JpaRepository<AddedTo, AddedToId> {
     void insertIntoAddedTo(@Param("cart_id") int cart_id, @Param("book_id") int book_id);
 
     // update added to
+    @Modifying
     @Query(value = "UPDATE added_to SET book_id = :new_book_id, cart_id = :new_cart_id WHERE book_id = :old_book_id AND cart_id = :old_cart_id", nativeQuery = true)
     void updateAddedTo(@Param("new_cart_id") int new_cart_id, @Param("new_book_id") int new_book_id, @Param("old_cart_id") int old_cart_id, @Param("old_book_id") int old_book_id);
 
     // delete from added to
+    @Modifying
     @Query(value = "DELETE FROM added_to WHERE book_id = :book_id AND cart_id = :cart_id", nativeQuery = true)
     void deleteFromAddedTo(@Param("cart_id") int cart_id, @Param("book_id") int book_id);
 }

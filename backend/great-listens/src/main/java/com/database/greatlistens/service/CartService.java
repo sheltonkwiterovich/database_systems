@@ -14,4 +14,7 @@ public interface CartService {
     Cart viewCart(int cart_id);
     List<Audiobook> getBooksInCart(int cart_id);
     double getCartTotal(int cart_id);
+    void removeBookFromCart(int cart_id, int book_id);
+
+
 }

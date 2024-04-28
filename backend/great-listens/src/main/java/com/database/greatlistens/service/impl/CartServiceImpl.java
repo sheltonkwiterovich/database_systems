@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.database.greatlistens.model.Audiobook;
 import com.database.greatlistens.model.Cart;
 import com.database.greatlistens.repository.AddedToRepository;
+import com.database.greatlistens.repository.AudiobookRepository;
 import com.database.greatlistens.repository.CartRepository;
 import com.database.greatlistens.service.CartService;
 
@@ -20,6 +21,8 @@ public class CartServiceImpl implements CartService{
     private CartRepository cartRepository;
     @Autowired
     private AddedToRepository addedToRepository;
+    @Autowired
+    private AudiobookRepository audiobookRepository;
 
     @Override
     @Transactional
@@ -59,5 +62,18 @@ public class CartServiceImpl implements CartService{
         double cartTotal = cartRepository.getCartTotal(cart_id);
         return cartTotal;
     }
+
+    @Override
+    @Transactional
+    public void removeBookFromCart(int cart_id, int book_id) {
+        Cart cart = cartRepository.searchByCartId(cart_id);
+        Audiobook book = audiobookRepository.searchByAudiobookId(book_id);
+        double price = book.getPrice();
+        double curCartTotal = cart.getCart_total();
+        double newCartTotal = curCartTotal - price;
+        cartRepository.updateCartTotal(cart_id, newCartTotal);
+        addedToRepository.deleteFromAddedTo(cart_id, book_id);
+    }
+
 
 }
