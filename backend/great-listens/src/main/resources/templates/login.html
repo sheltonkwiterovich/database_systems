@@ -144,7 +144,7 @@ function createCart(memberId, authToken) {
 
             if (cartResponse && cartResponse.cart_id) {
                 sessionStorage.setItem('cart_id', cartResponse.cart_id);
-                alert('Cart created with ID: ' + cartResponse.cart_id);
+                //alert('Cart created with ID: ' + cartResponse.cart_id);
                 window.location.href = '/user'; 
             } else {
                 alert('Cart creation successful but no cart ID received.');

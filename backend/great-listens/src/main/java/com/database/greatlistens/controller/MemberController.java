@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.database.greatlistens.Token.TokenManager;
@@ -139,9 +140,25 @@ public class MemberController {
 
     @GetMapping("/booksBought")
     @ResponseBody
-    public List<Audiobook> getBookBoughtByMember(@RequestHeader("Authorization")String token, @RequestBody Map<String, Object> requestBody) {
-        String mem_id = (String) requestBody.get("mem_id");
-        return memberService.getBooksBoughtByMember(mem_id);
-    }
+    public ResponseEntity<List<Audiobook>> getBooksBoughtByMember(
+        @RequestHeader("Authorization") String token,
+        @RequestParam("mem_id") String memId) {
+    
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+    
+        if (!TokenManager.validateToken(token, memId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    
+        try {
+            List<Audiobook> books = memberService.getBooksBoughtByMember(memId);
+            return ResponseEntity.ok(books);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    
+}
 }
     

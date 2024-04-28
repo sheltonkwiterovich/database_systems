@@ -46,7 +46,7 @@
         </div>
     </div>
     <script>
-    var bookIdsInCart = []; 
+    //var bookIdsInCart = []; 
 
      $(document).ready(function() {
         fetchBooksInCart();
@@ -123,61 +123,116 @@
     });
 }
 
-    function handleCheckout() {
-        var checkoutData = {
-            "cart_id": parseInt(sessionStorage.getItem('cart_id')), // Make sure cart_id is an integer
-            "mem_id": sessionStorage.getItem('mem_id'), // Get the member ID stored in session
-        "book_list": bookIdsInCart,
-            "card_holder": $('#card-name').val(),
-            "credit_card": $('#card-number').val(),
+async function getInCart() {
+    const authToken = sessionStorage.getItem('authToken');
+    const cart_id = sessionStorage.getItem('cart_id');
+    if (!cart_id) {
+        console.error('No cart_id found in session storage.');
+        return []; 
+    }
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/cart/books?cart_id=${encodeURIComponent(cart_id)}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+
+        console.log("Received response:", response);
+        if (!response.ok) {
+            console.error('Response not OK, status:', response.status);
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+
+        const books = await response.json();
+        console.log(books);
+        return books;  // This returns the list of books
+    } catch (error) {
+        console.error('Error fetching books data:', error);
+        return []; // Returns an empty list in case of error
+    }
+}
+
+
+async function handleCheckout() {
+    var booksInCart = await getInCart(); // Fetch the books in the cart
+    var bookIds = booksInCart.map(book => book.book_id); // Extract just the book IDs from the books
+    
+    var checkoutData = {
+        "cart_id": parseInt(sessionStorage.getItem('cart_id')),
+        "mem_id": sessionStorage.getItem('mem_id'),
+        "book_list": bookIds, // Send the list of book IDs
+        "card_holder": $('#card-name').val(),
+        "credit_card": $('#card-number').val(),
         "card_name": $('#card-name').val(),
-            "expiration": $('#expiration-date').val(),
-            "csv": $('#cvv').val()
+        "expiration": $('#expiration-date').val(),
+        "csv": $('#cvv').val()
     };
 
-        console.log("Attempting to checkout with data:", checkoutData); // Debug statement
+    console.log("Attempting to checkout with data:", JSON.stringify(checkoutData));  // Log the exact JSON being sent
 
-        $.ajax({
-                url: 'http://localhost:8080/api/buy',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(checkoutData),
-                success: function(response) {
-                    console.log("Checkout successful:", response);
-                    alert('Purchase complete! Confirmation code: ' + response.conf_code);
-                    bookIdsInCart.forEach(bookId => removeBookFromCart(bookId)); // Call remove function for each book
-                    window.location.href = '/user';
-                
 
+    $.ajax({
+        url: 'http://localhost:8080/api/buy',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(checkoutData),
+        success: function(response) {
+            console.log("Checkout successful:", response);
+            alert('Purchase complete! Confirmation code: ' + response.conf_code);
+            // After successful purchase, clear the current cart data
+            
+            clearPaymentInformation();
+            // Then, create a new cart for the user
+            
+            createNewCartAfterPurchase(checkoutData.mem_id);
         },
         error: function(xhr) {
-            console.error("Checkout failed:", xhr.responseText); // Debug statement
+            console.error("Checkout failed:", xhr.responseText);
             alert('Checkout failed: ' + xhr.responseText);
             $('.message-display').text('Checkout failed. Please try again.');
         }
     });
+
+
+
+
+
+}
+function clearPaymentInformation() {
+    // Clear the payment input fields
+    $('#card-number').val('');
+    $('#cvv').val('');
+    $('#expiration-date').val('');
+    $('#card-name').val('');
 }
 
-function removeBookFromCart(bookId) {
-            var mem_id = sessionStorage.getItem('mem_id');
-            var cart_id = parseInt(sessionStorage.getItem('cart_id'));
-            var authToken = sessionStorage.getItem('authToken');
-
-            $.ajax({
-                url: 'http://localhost:8080/api/removeBook',
-                type: 'DELETE',
-                contentType: 'application/json',
-                headers: { 'Authorization': authToken },
-                data: JSON.stringify({ "mem_id": mem_id, "cart_id": cart_id, "book_id": bookId }),
-                success: function(response) {
-                    console.log("Book removed from cart:", response);
-                    fetchBooksInCart(); // Update the cart display
-                },
-                error: function(xhr) {
-                    console.error("Failed to remove book from cart:", xhr.responseText);
-                }
-            });
+function createNewCartAfterPurchase(memberId) {
+    var authToken = sessionStorage.getItem('authToken');
+    $.ajax({
+        url: 'http://localhost:8080/api/cart/create',
+        type: 'POST',
+        contentType: 'application/json',
+        headers: { 'Authorization': authToken },
+        data: JSON.stringify({ "mem_id": memberId }),
+        success: function(cartResponse) {
+            console.log('New cart created:', cartResponse);
+            sessionStorage.setItem('cart_id', cartResponse.cart_id);
+            $('#book-grid').empty(); // Clear the current book grid
+            $('#cart-total-display').html('Total: $0'); // Reset the total display
+        },
+        error: function(xhr) {
+            console.error("Failed to create a new cart:", xhr.responseText);
+            alert('Failed to create a new cart: ' + xhr.responseText);
         }
+    });
+
+
+}
+
+       
+
 
         
     </script>

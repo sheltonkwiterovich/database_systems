@@ -32,11 +32,7 @@ public class ViewController {
         return "dashboard2";
     }
 
-    @GetMapping("/rate")
-    public String ratePage() {
-        
-        return "rate";
-    }
+   
     
     @GetMapping("/cart")
     public String cartPage() {
