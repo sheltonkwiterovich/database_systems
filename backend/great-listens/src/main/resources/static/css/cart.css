@@ -1,0 +1,161 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif; /* Set default font to Arial for everything */
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+header nav ul {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0;
+}
+
+/* Make all anchors Arial except the title */
+header nav ul li a {
+    text-decoration: none;
+    color: white;
+    padding: 12px 20px; /* Increase padding to make buttons larger */
+    font-family: Arial; /* Set font to Arial */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Style for 'Shop for Audiobooks' and 'Your Profile' */
+header nav ul li a:not(.title) {
+    background-color: #04AA6D;
+    margin-right: 0; /* Keep aligned to the right side */
+}
+
+/* Hover effect for 'Shop for Audiobooks' and 'Your Profile' */
+header nav ul li a:not(.title):hover,
+header nav ul li a:not(.title):active {
+    background-color: #036c52;
+}
+
+/* Specific style for 'Great Listens' */
+header nav ul li a.title {
+    background: none;
+    color: purple;
+    font-family: 'Pacifico', cursive;
+    font-size: 32px; /* Keep the increased font size */
+    padding: 0;
+    margin: 0 auto; /* Center the title */
+}
+
+/* Reset hover effects for 'Great Listens' */
+header nav ul li a.title:hover {
+    background-color: transparent;
+    color: purple;
+}
+
+/* Positioning of the buttons to the sides */
+header nav ul li:first-child {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+header nav ul li:last-child {
+    margin-right: 0;
+    margin-left: auto;
+}
+
+.main-container {
+    display: flex;
+    padding: 20px;
+    justify-content: space-between;
+}
+
+.split {
+    background: white;
+    padding: 20px;
+    margin: 10px;
+    width: 48%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.split.left {
+    border-right: 2px solid #dee2e6;
+}
+
+#cart-total-display {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: red;
+}
+
+form#checkout-form {
+    display: flex;
+    flex-direction: column;
+}
+
+form#checkout-form label {
+    margin: 10px 0 5px;
+}
+
+form#checkout-form input,
+form#checkout-form button {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+form#checkout-form button {
+    background-color: #04AA6D;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form#checkout-form button:hover {
+    background-color: #036c52;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .split {
+        width: 100%;
+    }
+
+    header nav ul {
+        flex-direction: column;
+    }
+
+    header nav ul li {
+        margin-bottom: 10px;
+    }
+
+    header nav ul li:last-child {
+        margin-bottom: 0;
+    }
+}

@@ -71,45 +71,45 @@ public class CartController {
     
     
 
-    @GetMapping("/total")
-    @ResponseBody
-    public ResponseEntity getCartTotal(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> requestBody) {
+@GetMapping("/total")
+@ResponseBody
+public ResponseEntity<?> getCartTotal(
+        @RequestHeader("Authorization") String token,
+        @RequestParam("mem_id") String memId,
+        @RequestParam("cart_id") int cartId) {
+    if (!TokenManager.validateToken(token, memId)) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+    }
+    double total = cartService.getCartTotal(cartId);
+    return ResponseEntity.ok(total);
+}
 
-        String memId = (String) requestBody.get("mem_id");
-        int cartId = (int) requestBody.get("cart_id");
-        if (!TokenManager.validateToken(token, memId)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-        double total = cartService.getCartTotal(cartId);
-        return ResponseEntity.ok(total);
+private static final Logger log = LoggerFactory.getLogger(CartController.class);
+
+@GetMapping("/books")
+@ResponseBody
+public ResponseEntity<?> getBooksInCart(@RequestHeader("Authorization") String token, @RequestParam("cart_id") int cartId) {
+
+    if (token != null && token.startsWith("Bearer ")) {
+        token = token.substring(7);
     }
 
-    private static final Logger log = LoggerFactory.getLogger(CartController.class);
+    String memId = TokenManager.getTokenMemId(token);
+    log.debug("Retrieved memId from token: {}", memId);
 
-    @GetMapping("/books")
-    @ResponseBody
-    public ResponseEntity getBooksInCart(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> requestBody) {
-        int cartId = (int) requestBody.get("cart_id");
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-
-        String memId = TokenManager.getTokenMemId(token);
-        log.debug("Retrieved memId from token: {}", memId);
-
-        if (memId == null || !TokenManager.validateToken(token, memId)) {
-            log.warn("Token validation failed for memId: {}", memId);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
-
-        try {
-            List<Audiobook> books = cartService.getBooksInCart(cartId);
-            return ResponseEntity.ok(books);
-        } catch (Exception e) {
-            log.error("Error retrieving books from cart", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while retrieving books from cart.");
-        }
+    if (memId == null || !TokenManager.validateToken(token, memId)) {
+        log.warn("Token validation failed for memId: {}", memId);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
     }
+
+    try {
+        List<Audiobook> books = cartService.getBooksInCart(cartId);
+        return ResponseEntity.ok(books);
+    } catch (Exception e) {
+        log.error("Error retrieving books from cart", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while retrieving books from cart.");
+    }
+}
 
 
     private Audiobook mapToAudiobook(Map<String, Object> requestBody) {
@@ -133,6 +133,8 @@ public class CartController {
         return new Cart(cartId, memId, cartTotal);
     }
      
+     
+
     @DeleteMapping("/removeBook")
     public ResponseEntity<String> removeBookFromCart(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> requestBody) {
         String memId = (String) requestBody.get("mem_id");
@@ -144,6 +146,5 @@ public class CartController {
         cartService.removeBookFromCart(cartId, bookId);
         return ResponseEntity.ok("Book removed from cart successfully.");
     }
-
-
+   
 }
