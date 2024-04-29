@@ -30,17 +30,17 @@
             <h2>Proceed to Checkout</h2>
             <form id="checkout-form">
                 <label for="card-number">Card Number:</label>
-                <input type="text" id="card-number" name="card-number" required>
-                
+                <input type="text" id="card-number" name="card-number" required pattern="[0-9]{16}" title="Please enter a 16-digit card number">
+            
                 <label for="cvv">CVV:</label>
-                <input type="text" id="cvv" name="cvv" required>
-                
+                <input type="text" id="cvv" name="cvv" required pattern="[0-9]{3}" title="Please enter a 3-digit CVV">
+            
                 <label for="expiration-date">Expiration Date:</label>
                 <input type="date" id="expiration-date" name="expiration-date" required>
-                
+            
                 <label for="card-name">Name on Card:</label>
                 <input type="text" id="card-name" name="card-name" required>
-                
+            
                 <button type="submit">COMPLETE PURCHASE</button>
             </form>
         </div>
@@ -48,15 +48,38 @@
     <script>
 
 
-     $(document).ready(function() {
+    $(document).ready(function() {
         fetchBooksInCart();
         getCartTotal();
-          
+        
         $('#checkout-form').on('submit', function(e) {
             e.preventDefault(); 
-            handleCheckout(); 
-            });
+            if (validateForm()) {
+                handleCheckout(); 
+            }
         });
+    });
+
+    function validateForm() {
+        var isValid = true;
+        var cardNumber = $('#card-number').val();
+        var cvv = $('#cvv').val();
+        var expirationDate = $('#expiration-date').val();
+
+        // Card number validation
+        if (!cardNumber.match(/^\d{16}$/)) {
+            alert('Please enter a 16-digit card number.');
+            isValid = false;
+        }
+
+        // CVV validation
+        if (!cvv.match(/^\d{3}$/)) {
+            alert('Please enter a 3-digit CVV.');
+            isValid = false;
+        }
+
+        return isValid;
+    }
 
 
     function getCartTotal() {
@@ -74,9 +97,9 @@
             error: function(xhr) {
                 alert('Failed to retrieve cart total: ' + xhr.responseText);
                 console.error('Cart total error:', xhr.responseText);
-        }
-    });
-}
+            }
+        });
+    }
 
     function fetchBooksInCart() {
         const authToken = sessionStorage.getItem('authToken');
@@ -87,19 +110,19 @@
         }
 
         fetch(`http://localhost:8080/api/cart/books?cart_id=${encodeURIComponent(cart_id)}`, {
-        method: 'GET',
-        headers: {
+            method: 'GET',
+            headers: {
             'Authorization': `Bearer ${authToken}`
-        }
-    })
+            }
+        })
         .then(response => {
             console.log("Received response:", response);
             if (!response.ok) {
                 console.error('Response not OK, status:', response.status);
                 throw new Error('Network response was not ok: ' + response.statusText);
-        }
+            }
             return response.json();
-    })
+        })
         .then(books => {
             const bookGrid = document.getElementById('book-grid');
             bookGrid.innerHTML = '';
@@ -107,124 +130,157 @@
                 const bookElement = document.createElement('div');
                 bookElement.className = 'book';
                 bookElement.innerHTML = `
-                <h3>${book.book_name}</h3>
-                <p>Author: ${book.book_author}</p>
-                <p>Narrator: ${book.book_narrator}</p>
-                <p>Categories: ${book.categories}</p>
-                <p>Rating: ${book.rating}</p>
-                <p>Price: $${book.price.toFixed(2)}</p>
-                <p>Listening Time: ${book.listening_time} minutes</p>
-            `;
+                    <h3>${book.book_name}</h3>
+                    <p>Author: ${book.book_author}</p>
+                    <p>Narrator: ${book.book_narrator}</p>
+                    <p>Categories: ${book.categories}</p>
+                    <p>Rating: ${book.rating}</p>
+                    <p>Price: $${book.price.toFixed(2)}</p>
+                    <p>Listening Time: ${book.listening_time} minutes</p>
+                    <button class="remove-button" data-cart-id="${cart_id}" data-book-id="${book.book_id}">Remove</button>
+                    `;
                 bookGrid.appendChild(bookElement);
-        });
-    })
+            });
+
+            $('.remove-button').on('click', function() {
+                const cartId = $(this).data('cart-id');
+                const bookId = $(this).data('book-id');
+                removeBookFromCart(cartId, bookId);
+            });
+        })
         .catch(error => {
             console.error('Error fetching books data:', error);
-    });
-}
-
-async function getInCart() {
-    const authToken = sessionStorage.getItem('authToken');
-    const cart_id = sessionStorage.getItem('cart_id');
-    if (!cart_id) {
-        console.error('No cart_id found in session storage.');
-        return []; 
+        });
     }
 
-    try {
-        const response = await fetch(`http://localhost:8080/api/cart/books?cart_id=${encodeURIComponent(cart_id)}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${authToken}`
+    async function getInCart() {
+        const authToken = sessionStorage.getItem('authToken');
+        const cart_id = sessionStorage.getItem('cart_id');
+        if (!cart_id) {
+            console.error('No cart_id found in session storage.');
+            return []; 
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/cart/books?cart_id=${encodeURIComponent(cart_id)}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            });
+
+            console.log("Received response:", response);
+            if (!response.ok) {
+                console.error('Response not OK, status:', response.status);
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+
+            const books = await response.json();
+            console.log(books);
+            return books; 
+        } catch (error) {
+            console.error('Error fetching books data:', error);
+            return []; 
+        }
+    }
+
+
+    async function handleCheckout() {
+        var booksInCart = await getInCart(); 
+        var bookIds = booksInCart.map(book => book.book_id); 
+        
+
+        var checkoutData = {
+            "cart_id": parseInt(sessionStorage.getItem('cart_id')),
+            "mem_id": sessionStorage.getItem('mem_id'),
+            "book_list": bookIds, 
+            "card_holder": $('#card-name').val(),
+            "credit_card": $('#card-number').val(),
+            "card_name": $('#card-name').val(),
+            "expiration": $('#expiration-date').val(),
+            "csv": $('#cvv').val()
+        };
+
+        console.log("Attempting to checkout with data:", JSON.stringify(checkoutData)); 
+
+        $.ajax({
+            url: 'http://localhost:8080/api/buy',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(checkoutData),
+            success: function(response) {
+                console.log("Checkout successful:", response);
+                alert('Purchase complete! Confirmation code: ' + response.conf_code);
+            
+                clearPaymentInformation();
+                
+                
+                createNewCartAfterPurchase(checkoutData.mem_id);
+            },
+            error: function(xhr) {
+                console.error("Checkout failed:", xhr.responseText);
+                alert('Checkout failed: ' + xhr.responseText);
+                $('.message-display').text('Checkout failed. Please try again.');
             }
         });
-
-        console.log("Received response:", response);
-        if (!response.ok) {
-            console.error('Response not OK, status:', response.status);
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }
-
-        const books = await response.json();
-        console.log(books);
-        return books; 
-    } catch (error) {
-        console.error('Error fetching books data:', error);
-        return []; 
     }
-}
 
+    async function removeBookFromCart(cartId, bookId) {
+        var authToken = sessionStorage.getItem('authToken');
+        var memId = sessionStorage.getItem('mem_id');
 
-async function handleCheckout() {
-    var booksInCart = await getInCart(); 
-    var bookIds = booksInCart.map(book => book.book_id); 
-    
-    var checkoutData = {
-        "cart_id": parseInt(sessionStorage.getItem('cart_id')),
-        "mem_id": sessionStorage.getItem('mem_id'),
-        "book_list": bookIds, 
-        "card_holder": $('#card-name').val(),
-        "credit_card": $('#card-number').val(),
-        "card_name": $('#card-name').val(),
-        "expiration": $('#expiration-date').val(),
-        "csv": $('#cvv').val()
-    };
+        $.ajax({
+            url: 'http://localhost:8080/api/cart/removeBook',
+            type: 'DELETE',
+            contentType: 'application/json',
+            headers: { 'Authorization': authToken },
+            data: JSON.stringify({
+                'mem_id': memId,
+                'cart_id': cartId,
+                'book_id': bookId
+            }),
+            success: function(response) {
+                console.log('Book removed from cart:', response);
+                alert('Book removed from cart successfully.');
+                // Refresh the cart
+                fetchBooksInCart();
+                getCartTotal();
+            },
+            error: function(xhr) {
+                console.error('Failed to remove book from cart:', xhr.responseText);
+                alert('Failed to remove book from cart: ' + xhr.responseText);
+            }
+        });
+    }
 
-    console.log("Attempting to checkout with data:", JSON.stringify(checkoutData)); 
+    function clearPaymentInformation() {
 
-    $.ajax({
-        url: 'http://localhost:8080/api/buy',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(checkoutData),
-        success: function(response) {
-            console.log("Checkout successful:", response);
-            alert('Purchase complete! Confirmation code: ' + response.conf_code);
-           
-            clearPaymentInformation();
-            
-            
-            createNewCartAfterPurchase(checkoutData.mem_id);
-        },
-        error: function(xhr) {
-            console.error("Checkout failed:", xhr.responseText);
-            alert('Checkout failed: ' + xhr.responseText);
-            $('.message-display').text('Checkout failed. Please try again.');
-        }
-    });
+        $('#card-number').val('');
+        $('#cvv').val('');
+        $('#expiration-date').val('');
+        $('#card-name').val('');
+    }
 
-
-}
-function clearPaymentInformation() {
-
-    $('#card-number').val('');
-    $('#cvv').val('');
-    $('#expiration-date').val('');
-    $('#card-name').val('');
-}
-
-function createNewCartAfterPurchase(memberId) {
-    var authToken = sessionStorage.getItem('authToken');
-    $.ajax({
-        url: 'http://localhost:8080/api/cart/create',
-        type: 'POST',
-        contentType: 'application/json',
-        headers: { 'Authorization': authToken },
-        data: JSON.stringify({ "mem_id": memberId }),
-        success: function(cartResponse) {
-            console.log('New cart created:', cartResponse);
-            sessionStorage.setItem('cart_id', cartResponse.cart_id);
-            $('#book-grid').empty(); 
-            $('#cart-total-display').html('Total (+ 5 cent processing fee): $0');
-        },
-        error: function(xhr) {
-            console.error("Failed to create a new cart:", xhr.responseText);
-            alert('Failed to create a new cart: ' + xhr.responseText);
-        }
-    });
-
-
-}
+    function createNewCartAfterPurchase(memberId) {
+        var authToken = sessionStorage.getItem('authToken');
+        $.ajax({
+            url: 'http://localhost:8080/api/cart/create',
+            type: 'POST',
+            contentType: 'application/json',
+            headers: { 'Authorization': authToken },
+            data: JSON.stringify({ "mem_id": memberId }),
+            success: function(cartResponse) {
+                console.log('New cart created:', cartResponse);
+                sessionStorage.setItem('cart_id', cartResponse.cart_id);
+                $('#book-grid').empty(); 
+                $('#cart-total-display').html('Total (+ 5 cent processing fee): $0');
+            },
+            error: function(xhr) {
+                console.error("Failed to create a new cart:", xhr.responseText);
+                alert('Failed to create a new cart: ' + xhr.responseText);
+            }
+        });
+    }
 
     
     </script>

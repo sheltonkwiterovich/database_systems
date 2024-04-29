@@ -51,5 +51,4 @@ public class Cart {
     public void setCart_total(double cart_total) {
         this.cart_total = cart_total;
     }
-
 }

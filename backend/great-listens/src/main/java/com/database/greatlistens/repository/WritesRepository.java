@@ -35,6 +35,4 @@ public interface WritesRepository extends JpaRepository<Writes, WritesId> {
     // delete from writes
     @Query(value = "DELETE FROM writes WHERE mem_id = :mem_id AND book_id = :book_id", nativeQuery = true)
     void deleteFromBuys(@Param("book_id") int book_id, @Param("mem_id") String mem_id);
-
-
 }

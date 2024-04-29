@@ -44,6 +44,11 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     @Modifying
     void updateMember(@Param("mem_id") String mem_id, @Param("name") String name, @Param("phone_num") String phone_num, @Param("email") String email, @Param("password") String password, @Param("date_of_birth") Date date_of_birth);
 
+    // update member
+    @Transactional
+    @Query(value = "UPDATE member SET name = :name, phone_num = :phone_num, email = :email, date_of_birth = :date_of_birth WHERE mem_id = :mem_id", nativeQuery = true)
+    @Modifying
+    void updateMemberNoPassword(@Param("mem_id") String mem_id, @Param("name") String name, @Param("phone_num") String phone_num, @Param("email") String email, @Param("date_of_birth") Date date_of_birth);
     // delete member
     @Transactional
     @Query(value = "DELETE FROM member WHERE mem_id = :mem_id", nativeQuery = true)
@@ -52,5 +57,8 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 
     @Query(value = "SELECT COUNT(*) AS member_count FROM member WHERE mem_id = :mem_id", nativeQuery = true)
     int memberExists(@Param("mem_id") String mem_id); 
+
+    @Query(value = "SELECT COUNT(*) AS email_count FROM member WHERE email = :email", nativeQuery = true)
+    int emailExists(@Param("email") String email);
 }
 

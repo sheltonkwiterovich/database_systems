@@ -43,6 +43,4 @@ public class Has {
     public void setConf_code(int conf_code) {
         this.conf_code = conf_code;
     }
-
-    
 }

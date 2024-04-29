@@ -17,7 +17,6 @@ public class Confirmation {
 
     @Column(name = "card_holder")
     private String card_holder;
-
     
     public Confirmation() {
     }
@@ -51,7 +50,4 @@ public class Confirmation {
     public void setCard_holder(String card_holder) {
         this.card_holder = card_holder;
     }
-
-    
-
 }

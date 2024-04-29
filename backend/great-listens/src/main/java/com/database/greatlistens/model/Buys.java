@@ -42,8 +42,5 @@ public class Buys {
         this.mem_id = mem_id;
         this.book_id = book_id;
     }
-
-    
-
 }
 

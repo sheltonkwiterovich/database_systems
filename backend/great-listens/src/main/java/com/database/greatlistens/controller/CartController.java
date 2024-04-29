@@ -2,8 +2,6 @@ package com.database.greatlistens.controller;
 
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,8 +45,6 @@ public class CartController {
     @ResponseBody
     public ResponseEntity<String> addToCart(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> requestBody) {
         String memId = (String) requestBody.get("mem_id");
-        
-        
         if (!TokenManager.validateToken(token, memId)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
@@ -70,48 +66,33 @@ public class CartController {
         return ResponseEntity.ok(cart);
     }
     
-    
-
-@GetMapping("/total")
-@ResponseBody
-public ResponseEntity<?> getCartTotal(
-        @RequestHeader("Authorization") String token,
-        @RequestParam("mem_id") String memId,
-        @RequestParam("cart_id") int cartId) {
-    if (!TokenManager.validateToken(token, memId)) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-    }
-    double total = cartService.getCartTotal(cartId);
-    return ResponseEntity.ok(total);
-}
-
-private static final Logger log = LoggerFactory.getLogger(CartController.class);
-
-@GetMapping("/books")
-@ResponseBody
-public ResponseEntity<?> getBooksInCart(@RequestHeader("Authorization") String token, @RequestParam("cart_id") int cartId) {
-
-    if (token != null && token.startsWith("Bearer ")) {
-        token = token.substring(7);
+    @GetMapping("/total")
+    @ResponseBody
+    public ResponseEntity<?> getCartTotal(@RequestHeader("Authorization") String token, @RequestParam("mem_id") String memId, @RequestParam("cart_id") int cartId) {
+        if (!TokenManager.validateToken(token, memId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+        double total = cartService.getCartTotal(cartId);
+        return ResponseEntity.ok(total);
     }
 
-    String memId = TokenManager.getTokenMemId(token);
-    log.debug("Retrieved memId from token: {}", memId);
-
-    if (memId == null || !TokenManager.validateToken(token, memId)) {
-        log.warn("Token validation failed for memId: {}", memId);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+    @GetMapping("/books")
+    @ResponseBody
+    public ResponseEntity<?> getBooksInCart(@RequestHeader("Authorization") String token, @RequestParam("cart_id") int cartId) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        String memId = TokenManager.getTokenMemId(token);
+        if (memId == null || !TokenManager.validateToken(token, memId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+        try {
+            List<Audiobook> books = cartService.getBooksInCart(cartId);
+            return ResponseEntity.ok(books);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while retrieving books from cart.");
+        }
     }
-
-    try {
-        List<Audiobook> books = cartService.getBooksInCart(cartId);
-        return ResponseEntity.ok(books);
-    } catch (Exception e) {
-        log.error("Error retrieving books from cart", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while retrieving books from cart.");
-    }
-}
-
 
     private Audiobook mapToAudiobook(Map<String, Object> requestBody) {
         Integer bookId = (Integer) requestBody.get("book_id");
@@ -133,10 +114,8 @@ public ResponseEntity<?> getBooksInCart(@RequestHeader("Authorization") String t
     
         return new Cart(cartId, memId, cartTotal);
     }
-     
-     
 
-     @DeleteMapping("/removeBook")
+    @DeleteMapping("/removeBook")
     public ResponseEntity<String> removeBookFromCart(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> requestBody) {
         String memId = (String) requestBody.get("mem_id");
         if (!TokenManager.validateToken(token, memId)) {
@@ -147,5 +126,4 @@ public ResponseEntity<?> getBooksInCart(@RequestHeader("Authorization") String t
         cartService.removeBookFromCart(cartId, bookId);
         return ResponseEntity.ok("Book removed from cart successfully.");
     }
-   
 }

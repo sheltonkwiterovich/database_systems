@@ -42,6 +42,7 @@
                 <input type="password" id="password" required>
                 
                 <button type="submit">Sign Up</button>
+                <div id="registration-error" style="color: red;"></div>
             </form>
         </div>
 
@@ -52,113 +53,113 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 
-    $('#login-form').on('submit', function(e) {
-        e.preventDefault();
-        var loginData = {
-            email: $('#login-email').val(),
-            password: $('#login-password').val()
-    };
-        $.ajax({
-            url: 'http://localhost:8080/api/member/login',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(loginData),
-            success: function(token) {
-                if(token) {
-                    sessionStorage.setItem('authToken', token);
-                    viewMember(token);
-        
+        $('#login-form').on('submit', function(e) {
+            e.preventDefault();
+            var loginData = {
+                email: $('#login-email').val(),
+                password: $('#login-password').val()
+        };
+            $.ajax({
+                url: 'http://localhost:8080/api/member/login',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(loginData),
+                success: function(token) {
+                    if(token) {
+                        sessionStorage.setItem('authToken', token);
+                        viewMember(token);
+            
+                }
+                    else {
+                        alert('Login failed: No token received.');
+                }
+            },
+                error: function(xhr) {
+                    var errorMessage = xhr.status + ': ' + xhr.responseText;
+                    alert('Login failed: ' + errorMessage);
             }
-                else {
-                    alert('Login failed: No token received.');
-            }
-        },
-            error: function(xhr) {
-                var errorMessage = xhr.status + ': ' + xhr.responseText;
-                alert('Login failed: ' + errorMessage);
-        }
-    });
-});
+            });
+        });
 
  
-    $('#registration-form').on('submit', function(e) {
-                e.preventDefault();
-                var registrationData = {
-                    "name": $('#first-name').val() + ' ' + $('#last-name').val(),
-                    "phone_num": $('#phone').val(),
-                    "email": $('#email').val(),
-                    "password": $('#password').val(),
-                    "date_of_birth": $('#dob').val()
-                };
-                $.ajax({
-                    url: 'http://localhost:8080/api/member/create',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(registrationData),
-                    success: function(response) {
-                        console.log('Registration successful', response);
-                        alert('Registration successful! You can now log in.');
-                        window.location.href = '/login1'; 
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Registration failed', xhr, status, error);
-                        alert('Registration failed: ' + xhr.responseText);
+        $('#registration-form').on('submit', function(e) {
+            e.preventDefault();
+            var registrationData = {
+                "name": $('#first-name').val() + ' ' + $('#last-name').val(),
+                "phone_num": $('#phone').val(),
+                "email": $('#email').val(),
+                "password": $('#password').val(),
+                "date_of_birth": $('#dob').val()
+            };
+            $.ajax({
+                url: 'http://localhost:8080/api/member/create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(registrationData),
+                success: function(response) {
+                    console.log('Registration successful', response);
+                    alert('Registration successful! You can now log in.');
+                    window.location.href = '/login1'; 
+                },
+                error: function(xhr, status, error) {
+                    console.error('Registration failed', xhr, status, error);
+                    if (xhr.status === 400 && xhr.responseText.includes("Email already exists")) {
+                        $('#registration-error').text('Registration failed: Email already exists.');
+                    } else {
+                        $('#registration-error').text('Registration failed: ' + xhr.responseText);
                     }
-                });
+                }
             });
+        });
 
 
-    function viewMember(token) {
+        function viewMember(token) {
             $.ajax({
             url: 'http://localhost:8080/api/member/view',
             type: 'GET',
             headers: { 'Authorization': token },
             success: function(member) {
                 sessionStorage.setItem('mem_id', member.mem_id);
-           
-            createCart(member.mem_id, token); 
-        },
+                createCart(member.mem_id, token); 
+            },
             error: function(xhr) {
                 alert('Failed to retrieve member details: ' + xhr.responseText);
+            }
+            });
         }
-    });
-}
 
-function createCart(memberId, authToken) {
-        $.ajax({
-        url: 'http://localhost:8080/api/cart/create',
-        type: 'POST',
-        contentType: 'application/json',
-        headers: { 'Authorization':  authToken },
-        data: JSON.stringify({ "mem_id": memberId}),
-        success: function(cartResponse) {
-            console.log('Cart response:', cartResponse);
-            if (typeof cartResponse === 'string') {
-                try {
-                    cartResponse = JSON.parse(cartResponse);
-                } catch (e) {
-                    alert('Failed to parse cart response.');
-                    return;
+        function createCart(memberId, authToken) {
+                $.ajax({
+                url: 'http://localhost:8080/api/cart/create',
+                type: 'POST',
+                contentType: 'application/json',
+                headers: { 'Authorization':  authToken },
+                data: JSON.stringify({ "mem_id": memberId}),
+                success: function(cartResponse) {
+                    console.log('Cart response:', cartResponse);
+                    if (typeof cartResponse === 'string') {
+                        try {
+                            cartResponse = JSON.parse(cartResponse);
+                        } catch (e) {
+                            alert('Failed to parse cart response.');
+                            return;
+                        }
+                    }
+
+                    if (cartResponse && cartResponse.cart_id) {
+                        sessionStorage.setItem('cart_id', cartResponse.cart_id);
+                
+                        window.location.href = '/user'; 
+                    } else {
+                        alert('Cart creation successful but no cart ID received.');
+                    }
+
+                },
+                error: function(xhr) {
+                    alert('Failed to create a cart: ' + xhr.responseText);
                 }
-            }
-
-            if (cartResponse && cartResponse.cart_id) {
-                sessionStorage.setItem('cart_id', cartResponse.cart_id);
-           
-                window.location.href = '/user'; 
-            } else {
-                alert('Cart creation successful but no cart ID received.');
-            }
-
-        },
-        error: function(xhr) {
-            alert('Failed to create a cart: ' + xhr.responseText);
+            });
         }
-    });
-}
-        
-
-
     </script>
 </body>
 </html>

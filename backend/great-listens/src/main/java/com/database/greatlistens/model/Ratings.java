@@ -54,7 +54,4 @@ public class Ratings {
     public void setRate(int rate) {
         this.rate = rate;
     }
-
-    
-
 }

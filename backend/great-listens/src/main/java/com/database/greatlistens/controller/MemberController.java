@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.database.greatlistens.Token.TokenManager;
+import com.database.greatlistens.exception.EmailAlreadyExistsException;
 import com.database.greatlistens.model.Audiobook;
 import com.database.greatlistens.model.Member;
 import com.database.greatlistens.service.MemberService;
@@ -41,15 +42,17 @@ public class MemberController {
             memberService.createMember(name, phone_num, email, password, date_of_birth);
             return ResponseEntity.ok("Member created successfully.");
         }
+        catch (EmailAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create member: Email already exists.");
+        }
         catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create member: " + e.getMessage());
         }
 
     }
 
-
     @PutMapping("/update")
-    public ResponseEntity updateMember(@RequestHeader("Authorization")String token, @RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<String> updateMember(@RequestHeader("Authorization") String token, @RequestBody Map<String, Object> requestBody) {
         String mem_id = (String) requestBody.get("mem_id");
         if (!TokenManager.validateToken(token, mem_id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
@@ -57,29 +60,32 @@ public class MemberController {
         String name = (String) requestBody.get("name");
         String phone_num = (String) requestBody.get("phone_num");
         String email = (String) requestBody.get("email");
-        String password = (String) requestBody.get("password");
         Date date_of_birth = Date.valueOf((String) requestBody.get("date_of_birth"));
 
-        memberService.updateMember(mem_id, name, phone_num, email, password, date_of_birth);
+        String password = null;
+        if (requestBody.containsKey("password")) {
+            password = (String) requestBody.get("password");
+        }
 
-        return ResponseEntity.ok("Member updated successfully");
+        try {
+            memberService.updateMember(mem_id, name, phone_num, email, password, date_of_birth);
+            return ResponseEntity.ok("Member updated successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update member: " + e.getMessage());
+        }
     }
+
 
     @GetMapping("/view")
     public ResponseEntity viewMember(@RequestHeader("Authorization") String token) {
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
-    
-    
         String mem_id = TokenManager.getTokenMemId(token);
-    
         if (mem_id == null || !TokenManager.validateToken(token, mem_id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
-    
         Member member = memberService.viewMember(mem_id);
-    
         if (member != null) {
             return ResponseEntity.ok(member);
         } else {
@@ -94,7 +100,6 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
         memberService.deleteMember(mem_id);
-
         return ResponseEntity.ok("Member deleted successfully");
     }
 
@@ -102,7 +107,6 @@ public class MemberController {
     public ResponseEntity<String> login(@RequestBody Map<String, Object> requestBody) {
         String email = (String) requestBody.get("email");
         String password = (String) requestBody.get("password");
-
         Member member = memberService.login(email, password);
         if (member != null) {
             String token = TokenManager.generateToken(member.getMem_id());
@@ -114,16 +118,11 @@ public class MemberController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
-
         String mem_id = TokenManager.getTokenMemId(token);
-    
         if (mem_id == null || !TokenManager.validateToken(token, mem_id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
-    
-    
         TokenManager.invalidateToken(token);
-    
         return ResponseEntity.ok("Logged out successfully");
     }
 
@@ -140,25 +139,19 @@ public class MemberController {
 
     @GetMapping("/booksBought")
     @ResponseBody
-    public ResponseEntity<List<Audiobook>> getBooksBoughtByMember(
-        @RequestHeader("Authorization") String token,
-        @RequestParam("mem_id") String memId) {
-    
+    public ResponseEntity<List<Audiobook>> getBooksBoughtByMember(@RequestHeader("Authorization") String token, @RequestParam("mem_id") String memId) {
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
-    
         if (!TokenManager.validateToken(token, memId)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-    
         try {
             List<Audiobook> books = memberService.getBooksBoughtByMember(memId);
             return ResponseEntity.ok(books);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    
-}
+    }
 }
     

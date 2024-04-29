@@ -35,7 +35,6 @@ public class Writes {
         this.book_id = book_id;
     }
     
-
     public Writes() {
     }
 
@@ -43,7 +42,4 @@ public class Writes {
         this.mem_id = mem_id;
         this.book_id = book_id;
     }
-
-    
-
 }

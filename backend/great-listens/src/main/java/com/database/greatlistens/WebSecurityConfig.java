@@ -14,7 +14,7 @@ public class WebSecurityConfig {
         http
             .csrf().disable()
             .authorizeRequests(authorize -> authorize
-                .anyRequest().permitAll() // Allow access to any endpoint without authentication
+                .anyRequest().permitAll()
             );
 
         return http.build();

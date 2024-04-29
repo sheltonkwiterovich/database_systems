@@ -40,6 +40,4 @@ public interface BuysRepository extends JpaRepository<Buys, BuysId> {
 
     @Query(value = "SELECT * FROM buys WHERE mem_id = :mem_id", nativeQuery = true)
     List<Buys> getBooksBoughtByMember(@Param("mem_id") String mem_id);
-
-
 }

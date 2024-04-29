@@ -27,8 +27,6 @@ public class Payment {
     @Column(name = "csv")
     private String csv;
 
-    
-
     public Payment() {
     }
 
@@ -79,6 +77,4 @@ public class Payment {
     public void setCsv(String csv) {
         this.csv = csv;
     }
-
-    
 }

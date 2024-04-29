@@ -78,7 +78,7 @@
                 sortPath = 'price/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
             } else if (sortField === 'time') {
                 sortPath = 'listening-time/' + (sortOrder === 'asc' ? 'low-to-high' : 'high-to-low');
-    }
+            }
 
             var url = baseUrl + sortPath;
 
@@ -109,93 +109,89 @@
             displayBooks();
         });
         
-    function learnMore(bookId) {
-            $('#details-' + bookId).toggle(); 
+        function learnMore(bookId) {
+                $('#details-' + bookId).toggle(); 
+            }
+
+        function getCartTotal(callback) {
+            var mem_id = sessionStorage.getItem('mem_id'); 
+            var cart_id = parseInt(sessionStorage.getItem('cart_id')); 
+            var authToken = sessionStorage.getItem('authToken'); 
+
+            if (!mem_id || !authToken || !cart_id) {
+                alert('You must be logged in and have a cart to view the total.');
+                return;
         }
-
-    function getCartTotal(callback) {
-        var mem_id = sessionStorage.getItem('mem_id'); 
-        var cart_id = parseInt(sessionStorage.getItem('cart_id')); 
-        var authToken = sessionStorage.getItem('authToken'); 
-
-        if (!mem_id || !authToken || !cart_id) {
-            alert('You must be logged in and have a cart to view the total.');
-            return;
-    }
 
         $.ajax({
             url: 'http://localhost:8080/api/cart/total?mem_id=' + encodeURIComponent(mem_id) + '&cart_id=' + encodeURIComponent(cart_id),
             type: 'GET',
             headers: { 'Authorization': authToken },
             success: function(response) {
-            var cartTotal = response.total || response; 
+                var cartTotal = response.total || response; 
 
-            if (callback) {
-                callback(cartTotal); 
-            }
-        },
+                if (callback) {
+                    callback(cartTotal); 
+                }
+            },
             error: function(xhr) {
                 alert('Failed to retrieve cart total: ' + xhr.responseText);
                 console.error('Cart total error:', xhr.responseText);
-        }
-    });
-}
-
-
-
-    function addToCart(bookId) {
-        var mem_id = sessionStorage.getItem('mem_id');
-        var cart_id = sessionStorage.getItem('cart_id');
-        var authToken = sessionStorage.getItem('authToken');
-
-  
-        getCartTotal(function(cartTotal) {
-            $.ajax({
-                url: 'http://localhost:8080/api/audiobooks/search/id/' + bookId,
-                type: 'GET',
-                headers: { 'Authorization': authToken },
-                contentType: 'application/json',
-                dataType: 'json',
-                success: function(bookDetails) {
-                //alert("hi");
-                var dataToAdd = {
-                    "mem_id": String(mem_id),
-                    "book_id": parseInt(bookDetails.book_id, 10),
-                    "book_name": String(bookDetails.book_name),
-                    "book_author": String(bookDetails.book_author),
-                    "book_narrator": String(bookDetails.book_narrator),
-                    "categories": String(bookDetails.categories),
-                    "rating": bookDetails.rating % 1 === 0 ? bookDetails.rating + 0.05 : bookDetails.rating,
-                    "price": bookDetails.price % 1 === 0 ? bookDetails.price + 0.0 : bookDetails.price,
-                    "listening_time": parseInt(bookDetails.listening_time, 10),
-                    "cart_id": parseInt(cart_id, 10),
-                    "cart_total": cartTotal % 1 === 0 ? cartTotal + 0.05 : cartTotal
-                    };
-
-                $.ajax({
-                    url: 'http://localhost:8080/api/cart/add',
-                    type: 'PUT',
-                    headers: { 'Authorization': authToken },
-                    contentType: 'application/json',
-                    data: JSON.stringify(dataToAdd),
-                    success: function(response) {
-                        alert('Book added to cart successfully!');
-                        console.debug('Add to cart response:', response);
-                    },
-                    error: function(xhr) {
-                        alert('Failed to add book to cart: ' + xhr.responseText);
-                        console.error('Add to cart error:', xhr.responseText);
-                    }
-                });
-            },
-                error: function(xhr) {
-                    alert('Failed to retrieve book details: ' + xhr.responseText);
-                    console.error('Fetch book details error:', xhr.responseText);
             }
         });
-    });
-}
-        
+        }
+
+        function addToCart(bookId) {
+            var mem_id = sessionStorage.getItem('mem_id');
+            var cart_id = sessionStorage.getItem('cart_id');
+            var authToken = sessionStorage.getItem('authToken');
+
+    
+            getCartTotal(function(cartTotal) {
+                $.ajax({
+                    url: 'http://localhost:8080/api/audiobooks/search/id/' + bookId,
+                    type: 'GET',
+                    headers: { 'Authorization': authToken },
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function(bookDetails) {
+                        var dataToAdd = {
+                            "mem_id": String(mem_id),
+                            "book_id": parseInt(bookDetails.book_id, 10),
+                            "book_name": String(bookDetails.book_name),
+                            "book_author": String(bookDetails.book_author),
+                            "book_narrator": String(bookDetails.book_narrator),
+                            "categories": String(bookDetails.categories),
+                            "rating": bookDetails.rating % 1 === 0 ? bookDetails.rating + 0.05 : bookDetails.rating,
+                            "price": bookDetails.price % 1 === 0 ? bookDetails.price + 0.0 : bookDetails.price,
+                            "listening_time": parseInt(bookDetails.listening_time, 10),
+                            "cart_id": parseInt(cart_id, 10),
+                            "cart_total": cartTotal % 1 === 0 ? cartTotal + 0.05 : cartTotal
+                            };
+
+                        $.ajax({
+                            url: 'http://localhost:8080/api/cart/add',
+                            type: 'PUT',
+                            headers: { 'Authorization': authToken },
+                            contentType: 'application/json',
+                            data: JSON.stringify(dataToAdd),
+                            success: function(response) {
+                                alert('Book added to cart successfully!');
+                                console.debug('Add to cart response:', response);
+                            },
+                            error: function(xhr) {
+                                alert('Failed to add book to cart: ' + xhr.responseText);
+                                console.error('Add to cart error:', xhr.responseText);
+                            }
+                        });
+                    },
+                    error: function(xhr) {
+                        alert('Failed to retrieve book details: ' + xhr.responseText);
+                        console.error('Fetch book details error:', xhr.responseText);
+                    }
+                });
+            });
+        }
     </script>
 </body>
 </html>

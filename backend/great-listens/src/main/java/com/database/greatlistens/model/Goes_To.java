@@ -19,8 +19,6 @@ public class Goes_To {
     @Column(name = "pay_id")
     private int pay_id;
 
-    
-
     public Goes_To() {
     }
 
@@ -44,6 +42,4 @@ public class Goes_To {
     public void setPay_id(int pay_id) {
         this.pay_id = pay_id;
     }
-
-
 }

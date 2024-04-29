@@ -19,12 +19,25 @@
         <div class="about-you">
             <h2>About You:</h2>
             <form id="userForm">
+                <label for="Name">Name:</label>
                 <input type="text" id="Name" placeholder="Your Name">
+                
+                <label for="dob">Date of Birth:</label>
                 <input type="text" id="dob" placeholder="Your DOB">
+                
+                <label for="phoneNumber">Phone Number:</label>
                 <input type="tel" id="phoneNumber" placeholder="Your Phone Number">
+                
+                <label for="email">Email:</label>
                 <input type="email" id="email" placeholder="Your Email">
+                
+                <label for="password">Enter New Password:</label>
+                <input type="password" id="password" placeholder="New Password">
+                
+                <button type="button" onclick="updateUserInfo()">Update</button>
             </form>
         </div>
+        
 
         <div class="past-reads">
             <h2>Past Reads:</h2>
@@ -42,7 +55,7 @@
         function fetchUserData() {
             const token = sessionStorage.getItem('authToken');
             if (!token) {
-               
+                console.error('Token not found in session storage');
                 window.location.href = '/login1.html';
                 return;
             }
@@ -55,13 +68,12 @@
             })
             .then(response => {
                 if (!response.ok) {
-                   
                     throw new Error('Network response was not ok: ' + response.statusText);
                 }
                 return response.json();
             })
             .then(data => {
-           
+                console.log('User data:', data);
                 document.getElementById('Name').value = data.name || '';
                 document.getElementById('dob').value = data.date_of_birth || '';
                 document.getElementById('phoneNumber').value = data.phone_num || '';
@@ -70,140 +82,270 @@
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
-            
-                window.location.href = '/login1';
+                window.location.href = '/login1.html';
+            });
+        }
+        function fetchUserBooks(token) {
+            const mem_id = sessionStorage.getItem('mem_id');
+
+            if (!mem_id) {
+                console.error('Member ID not found in session storage');
+                return;
+            }
+
+            console.log(`Attempting to fetch books with mem_id: ${mem_id}`);
+
+            fetch(`http://localhost:8080/api/member/booksBought?mem_id=${encodeURIComponent(mem_id)}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Response not OK, status:', response.status);
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(books => {
+                console.log('Books received:', books);
+                displayUserBooks(books);
+            })
+            .catch(error => {
+                console.error('Error fetching books:', error);
+            });
+        }
+
+        function displayUserBooks(books) {
+            const pastReadsContainer = document.querySelector('.past-reads');
+            pastReadsContainer.innerHTML = '<h2>Past Reads:</h2>';
+
+            if (Array.isArray(books) && books.length > 0) {
+                books.forEach(book => {
+                    createPersonalRating(0, book.book_id);
+
+                    const bookElement = document.createElement('div');
+                    bookElement.classList.add('book');
+                    bookElement.setAttribute('data-book-id', book.book_id);
+                    bookElement.innerHTML = `
+                        <h3>${book.book_name}</h3>
+                        <p>Author: ${book.book_author}</p>
+                        <p>Book #: ${book.book_id}</p>
+                        <p>Narrator: ${book.book_narrator}</p>
+                        <p>Categories: ${book.categories}</p>
+                        <p>Rating: ${book.rating}</p>
+                        <p>Price: $${book.price.toFixed(2)}</p>
+                        <p>Listening Time: ${book.listening_time} minutes</p>
+                        <select onchange="updateRating(this.value, ${book.book_id})">
+                            <option value="">Select your rating</option>
+                            <option value="1">1 - Bad</option>
+                            <option value="2">2 - Meh</option>
+                            <option value="3">3 - Fine</option>
+                            <option value="4">4 - Liked</option>
+                            <option value="5">5 - Loved</option>
+                        </select>
+                        <div class="personal-rating"></div>
+                    `;
+                    pastReadsContainer.appendChild(bookElement);
+                });
+
+                fetchAndDisplayAllRatings();
+            } else {
+                console.log('No books received');
+            }
+        }
+
+        function updateUserInfo() {
+            const token = sessionStorage.getItem('authToken');
+            const memId = sessionStorage.getItem('mem_id');
+            const name = document.getElementById('Name').value;
+            const dob = document.getElementById('dob').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value.trim(); 
+
+            // Check if password field is empty
+            const payload = {
+                mem_id: memId,
+                name: name,
+                date_of_birth: dob,
+                phone_num: phoneNumber,
+                email: email,
+            };
+
+            // Include password in payload only if it's not empty
+            if (password !== '') {
+                payload.password = password;
+            }
+
+            fetch('http://localhost:8080/api/member/update', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                alert('User information updated successfully!');
+            })
+            .catch(error => {
+                console.error('Error updating user info:', error);
+                alert('Failed to update user information. Please try again.');
             });
         }
 
         function fetchUserBooks() {
-    const token = sessionStorage.getItem('authToken');
-    const mem_id = sessionStorage.getItem('mem_id');
-
-
-    if (!token || !mem_id) {
-        console.error('Token or member ID missing in session storage.');
-        return;
-    }
-
-    console.log(`Attempting to fetch books with mem_id: ${mem_id}`); 
-
-    fetch(`http://localhost:8080/api/member/booksBought?mem_id=${encodeURIComponent(mem_id)}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => {
-        console.log('Response received'); 
-        if (!response.ok) {
-            console.error('Response not OK, status:', response.status);
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(books => {
-        console.log('Books received:', books); 
-
-        const pastReadsContainer = document.querySelector('.past-reads');
-        pastReadsContainer.innerHTML = '<h2>Past Reads:</h2>'; 
-
-        if (Array.isArray(books) && books.length > 0) {
-            books.forEach(book => {
-                 createPersonalRating(0, book.book_id);
-                 fetchAndDisplayAllRatings();
-
-                const bookElement = document.createElement('div');
-    bookElement.classList.add('book');
-    bookElement.setAttribute('data-book-id', book.book_id); 
-    bookElement.innerHTML = `
-        <h3>${book.book_name}</h3>
-        
-        <p>Author: ${book.book_author}</p>
-        <p>Book #: ${book.book_id}</p>
-        <p>Narrator: ${book.book_narrator}</p>
-        <p>Categories: ${book.categories}</p>
-        <p>Rating: ${book.rating}</p>
-        <p>Price: $${book.price.toFixed(2)}</p>
-        <p>Listening Time: ${book.listening_time} minutes</p>
-        <select onchange="updateRating(this.value, ${book.book_id})">
-            <option value="">Select your rating</option>
-            <option value="1">1 - Bad</option>
-            <option value="2">2 - Meh</option>
-            <option value="3">3 - Fine</option>
-            <option value="4">4 - Liked</option>
-            <option value="5">5 - Loved</option>
-        </select>
-        <div class="personal-rating"></div>
-    `;
-                pastReadsContainer.appendChild(bookElement);
-                fetchAndDisplayAllRatings();
-            });
-        } else {
-            console.log('No books received');
-        }
-    })
-    .catch(error => {
-        console.error('Error fetch:', error); 
-    });
-}
-
-function createPersonalRating(rating, bookId) {
-
-  
-    const token = sessionStorage.getItem('authToken');
-    const memId = sessionStorage.getItem('mem_id');
-    const payload = {
-        mem_id: memId,
-        book_id: parseInt(bookId),
-        rate: parseInt(rating)
-    };
-
-    fetch('http://localhost:8080/api/ratings/create', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token 
-    },
-    body: JSON.stringify(payload) 
-})
-
-.then(response => {
-        console.log('Received response:', response); 
-        
-        const contentType = response.headers.get("content-type");
-        if (!response.ok) {
-            if (contentType && contentType.includes("application/json")) {
-                return response.json().then(data => Promise.reject(data));
-            } else {
-                return response.text().then(text => Promise.reject(text));
-            }
-        }
-        return contentType && contentType.includes("application/json") ? response.json() : response.text();
-    })
-    .then(data => {
-        fetchAndDisplayAllRatings();
-        console.log('Rating submitted successfully:', data); 
-       
-
-        
-    })
-    .catch(error => {
-       
-        console.error('Error:', error);
-    });
-}
-
-
-function fetchAndDisplayAllRatings() {
             const token = sessionStorage.getItem('authToken');
-            const memId = sessionStorage.getItem('mem_id');
-            const url = new URL(`http://localhost:8080/api/ratings/member`);
-            url.searchParams.append('mem_id', memId);
+            const mem_id = sessionStorage.getItem('mem_id');
 
-            fetch(url, {
+            if (!token || !mem_id) {
+                console.error('Token or member ID missing in session storage.');
+                return;
+            }
+
+            console.log(`Attempting to fetch books with mem_id: ${mem_id}`);
+
+            fetch(`http://localhost:8080/api/member/booksBought?mem_id=${encodeURIComponent(mem_id)}`, {
                 method: 'GET',
                 headers: {
-                    'Authorization':  token
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                console.log('Response received');
+                if (!response.ok) {
+                    console.error('Response not OK, status:', response.status);
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(books => {
+                console.log('Books received:', books);
+                const pastReadsContainer = document.querySelector('.past-reads');
+                pastReadsContainer.innerHTML = '<h2>Past Reads:</h2>';
+
+                if (Array.isArray(books) && books.length > 0) {
+                    books.forEach(book => {
+                        createPersonalRating(0, book.book_id);
+
+                        const bookElement = document.createElement('div');
+                        bookElement.classList.add('book');
+                        bookElement.setAttribute('data-book-id', book.book_id);
+                        bookElement.innerHTML = `
+                            <h3>${book.book_name}</h3>
+                            <p>Author: ${book.book_author}</p>
+                            <p>Book #: ${book.book_id}</p>
+                            <p>Narrator: ${book.book_narrator}</p>
+                            <p>Categories: ${book.categories}</p>
+                            <p>Rating: ${book.rating}</p>
+                            <p>Price: $${book.price.toFixed(2)}</p>
+                            <p>Listening Time: ${book.listening_time} minutes</p>
+                            <select onchange="updateRating(this.value, ${book.book_id})">
+                                <option value="">Select your rating</option>
+                                <option value="1">1 - Bad</option>
+                                <option value="2">2 - Meh</option>
+                                <option value="3">3 - Fine</option>
+                                <option value="4">4 - Liked</option>
+                                <option value="5">5 - Loved</option>
+                            </select>
+                            <div class="personal-rating"></div>
+                        `;
+                        pastReadsContainer.appendChild(bookElement);
+                    });
+                    fetchAndDisplayAllRatings();
+                } else {
+                    console.log('No books received');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetch:', error);
+            });
+        }
+
+
+        function createPersonalRating(rating, bookId) {
+            const token = sessionStorage.getItem('authToken');
+            const memId = sessionStorage.getItem('mem_id');
+            const payload = {
+                mem_id: memId,
+                book_id: parseInt(bookId),
+                rate: parseInt(rating)
+            };
+
+            fetch('http://localhost:8080/api/ratings/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token 
+            },
+            body: JSON.stringify(payload) 
+        })
+
+        .then(response => {
+                console.log('Received response:', response); 
+                
+                const contentType = response.headers.get("content-type");
+                if (!response.ok) {
+                    if (contentType && contentType.includes("application/json")) {
+                        return response.json().then(data => Promise.reject(data));
+                    } else {
+                        return response.text().then(text => Promise.reject(text));
+                    }
+                }
+                return contentType && contentType.includes("application/json") ? response.json() : response.text();
+            })
+            .then(data => {
+                fetchAndDisplayAllRatings();
+                console.log('Rating submitted successfully:', data); 
+            
+
+                
+            })
+            .catch(error => {
+            
+                console.error('Error:', error);
+            });
+        }
+        function fetchBookTitle(bookId) {
+            return new Promise((resolve, reject) => {
+                fetch(`http://localhost:8080/api/audiobooks/search/id/${bookId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authToken')
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error fetching book title');
+                    }
+                    return response.json();
+                })
+                .then(book => {
+                    resolve(book.book_name);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+            });
+        }
+
+        function fetchAndDisplayAllRatings() {
+            const token = sessionStorage.getItem('authToken');
+            const memId = sessionStorage.getItem('mem_id');
+
+            // Fetch all ratings made by the member
+            fetch(`http://localhost:8080/api/ratings/member?mem_id=${memId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token
                 }
             })
             .then(response => {
@@ -213,100 +355,133 @@ function fetchAndDisplayAllRatings() {
                 return response.json();
             })
             .then(ratings => {
-                const personalRatingsContainer = document.querySelector('.personal-ratings');
-                personalRatingsContainer.innerHTML = '<h2>Personal Ratings:</h2>';
+                console.log('Received ratings:', ratings);
 
-                ratings.forEach(rating => {
-                    const ratingElement = document.createElement('div');
-                    ratingElement.classList.add('rating');
-                    ratingElement.innerHTML = `
-                        <p>Book Title: ${rating.book_id}</p>
-                        <p>Your Rating: ${rating.rate}</p>
-                    `;
-                    personalRatingsContainer.appendChild(ratingElement);
+                // Fetch all books bought by the member
+                fetch(`http://localhost:8080/api/member/booksBought?mem_id=${memId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error fetching books bought');
+                    }
+                    return response.json();
+                })
+                .then(books => {
+                    console.log('Received books bought:', books);
+
+                    const personalRatingsContainer = document.querySelector('.personal-ratings');
+                    personalRatingsContainer.innerHTML = '<h2>Personal Ratings:</h2>';
+
+                    // Create a map to store ratings by book ID
+                    const bookRatingsMap = new Map();
+
+                    // Populate the map with existing ratings
+                    ratings.forEach(rating => {
+                        bookRatingsMap.set(rating.book_id, rating.rate);
+                    });
+
+                    // Check each bought book and display its rating (or default to 0 if no rating exists)
+                    books.forEach(book => {
+                        const bookId = book.book_id;
+                        const rating = bookRatingsMap.has(bookId) ? bookRatingsMap.get(bookId) : 0;
+                        const bookTitle = book.book_name;
+
+                        const ratingElement = document.createElement('div');
+                        ratingElement.classList.add('rating');
+                        ratingElement.innerHTML = `
+                            <p>Book Title: ${bookTitle}</p>
+                            <p>Rating: ${rating}</p>
+                        `;
+                        personalRatingsContainer.appendChild(ratingElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching books bought:', error);
                 });
             })
             .catch(error => {
-                console.error('Error fetching and displaying ratings:', error);
+                console.error('Error fetching ratings:', error);
             });
         }
 
         function updateRating(rating, bookId) {
-    const token = sessionStorage.getItem('authToken');
-    const memId = sessionStorage.getItem('mem_id');
-   
-    const parsedRating = rating === "N/A" ? 0 : parseInt(rating);
-    const existingRatingElement = document.querySelector(`.book[data-book-id="${bookId}"] .personal-rating`);
-            
-          
+            const token = sessionStorage.getItem('authToken');
+            const memId = sessionStorage.getItem('mem_id');
+        
+            const parsedRating = rating === "N/A" ? 0 : parseInt(rating);
+            const existingRatingElement = document.querySelector(`.book[data-book-id="${bookId}"] .personal-rating`);
+                    
+                
 
-  
-    const payload = {
-        mem_id: memId,
-        book_id: bookId,
-        rate: parsedRating
-    };
+        
+            const payload = {
+                mem_id: memId,
+                book_id: bookId,
+                rate: parsedRating
+            };
 
-    fetch('http://localhost:8080/api/ratings/update', {
-        method: 'PUT',
-        headers: {
-            'Authorization': token,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.text();
-    })
-    .then(data => {
-   
-        fetchAndDisplayAllRatings();
-        console.log(data);
-   
-       
-    })
-    .catch(error => {
-
-        console.error('Error updating rating:', error);
-    });
-}
-
-
-        function logout() {
-    if (confirm('Are you sure you want to log out?')) {
-        const token = sessionStorage.getItem('authToken');
-
-        if (token) {
-            fetch('http://localhost:8080/api/member/logout', {
-                method: 'POST', 
+            fetch('http://localhost:8080/api/ratings/update', {
+                method: 'PUT',
                 headers: {
-                    'Authorization': 'Bearer ' + token
-                }
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
             })
             .then(response => {
-                if (response.ok) {
-                    alert('You have been logged out.');
-                } else {
-                    console.error('Failed to invalidate token on the server');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
+                return response.text();
+            })
+            .then(data => {
+        
+                fetchAndDisplayAllRatings();
+                console.log(data);
+        
+            
             })
             .catch(error => {
-                console.error('Error during logout:', error);
+
+                console.error('Error updating rating:', error);
             });
         }
 
-        sessionStorage.removeItem('authToken');
 
-        window.location.href = '/';
-    }
-}
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                const token = sessionStorage.getItem('authToken');
+
+                if (token) {
+                    fetch('http://localhost:8080/api/member/logout', {
+                        method: 'POST', 
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('You have been logged out.');
+                        } else {
+                            console.error('Failed to invalidate token on the server');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error during logout:', error);
+                    });
+                }
+
+                sessionStorage.removeItem('authToken');
+
+                window.location.href = '/';
+            }
+        }
 
         window.addEventListener('load', fetchUserData);
-      
-        
     </script>
       
 </body>

@@ -39,33 +39,30 @@
     </div>
 
     <script>
-    function displayBooks() {
+        function displayBooks() {
 
-    var url = 'http://localhost:8080/api/audiobooks';
+            var url = 'http://localhost:8080/api/audiobooks';
 
-    $.getJSON(url, function(books) {
-
-        $('#book-grid').empty();
-    
-        books.forEach(function(book) {
-        var bookHTML = 
-            '<div class="book-item">' +
-                '<h3>' + book.book_name + '</h3>' +
-                '<p>Author: ' + book.book_author + '</p>' +
-                '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
-                
-                '<div id="details-' + book.book_id + '" class="book-details" style="display:none;">' +
-                    '<p>Narrator: ' + book.book_narrator + '</p>' +
-                    '<p>Categories: ' + book.categories + '</p>' +
-                    '<p>Rating: ' + book.rating + '</p>' +
-                    '<p>Price: $' + book.price.toFixed(2) + '</p>' +
-                    '<p>Listening Time: ' + book.listening_time + ' minutes</p>' +
-                '</div>' +
-            '</div>';
-        $('#book-grid').append(bookHTML);
-    });
-});
-}
+            $.getJSON(url, function(books) {
+                $('#book-grid').empty();
+                books.forEach(function(book) {
+                var bookHTML = 
+                    '<div class="book-item">' +
+                        '<h3>' + book.book_name + '</h3>' +
+                        '<p>Author: ' + book.book_author + '</p>' +
+                        '<button onclick="learnMore(' + book.book_id + ')">Learn more</button>' +
+                        '<div id="details-' + book.book_id + '" class="book-details" style="display:none;">' +
+                            '<p>Narrator: ' + book.book_narrator + '</p>' +
+                            '<p>Categories: ' + book.categories + '</p>' +
+                            '<p>Rating: ' + book.rating + '</p>' +
+                            '<p>Price: $' + book.price.toFixed(2) + '</p>' +
+                            '<p>Listening Time: ' + book.listening_time + ' minutes</p>' +
+                        '</div>' +
+                    '</div>';
+                    $('#book-grid').append(bookHTML);
+                });
+            });
+        }
         
 
        function sortBooks(sortField, sortOrder) {
@@ -102,10 +99,9 @@
         });
         
      
-    function learnMore(bookId) {
+        function learnMore(bookId) {
             $('#details-' + bookId).toggle(); 
-        }
-        
+        }   
     </script>
 </body>
 </html>

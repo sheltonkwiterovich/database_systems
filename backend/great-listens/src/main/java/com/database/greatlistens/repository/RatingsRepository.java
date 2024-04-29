@@ -41,7 +41,5 @@ public interface RatingsRepository extends JpaRepository<Ratings, RatingsId> {
     // delete rating
     @Query(value = "DELETE FROM ratings WHERE book_id = :book_id AND mem_id = :mem_id", nativeQuery = true)
     @Modifying
-    void deleteRating(@Param("book_id") int book_id, @Param("mem_id") String mem_id);
-
-    
+    void deleteRating(@Param("book_id") int book_id, @Param("mem_id") String mem_id);    
 }

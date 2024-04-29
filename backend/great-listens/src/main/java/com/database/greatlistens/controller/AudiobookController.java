@@ -65,7 +65,7 @@ public class AudiobookController {
         return audiobookService.searchAudiobooksByAuthor(author);
     }
 
-    // http://localhost:8080/api/audiobooks/search/categories––
+    // http://localhost:8080/api/audiobooks/search/categories
     @GetMapping("/search/categories")
     @ResponseBody
     public List<Audiobook> searchAudiobooksByCategories(@RequestBody Map<String, Object> requestBody) {
@@ -91,8 +91,7 @@ public class AudiobookController {
         Double price = (Double) requestBody.get("price");
         Integer listeningTime = (Integer) requestBody.get("listeningTime");
     
-        audiobookService.updateAudiobook(bookId, bookName, bookAuthor, bookNarrator,
-                categories, rating, price, listeningTime);
+        audiobookService.updateAudiobook(bookId, bookName, bookAuthor, bookNarrator, categories, rating, price, listeningTime);
     
         return ResponseEntity.ok("Audiobook updated successfully");
     }

@@ -18,8 +18,6 @@ public class ViewController {
         return "login";
     }
 
-   
-
     @GetMapping("/user")
     public String userPage() {
         
@@ -32,13 +30,9 @@ public class ViewController {
         return "dashboard2";
     }
 
-   
-    
     @GetMapping("/cart")
     public String cartPage() {
         
         return "cart";
     }
-    
-    
 }
