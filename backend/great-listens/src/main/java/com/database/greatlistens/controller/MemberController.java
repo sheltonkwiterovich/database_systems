@@ -121,7 +121,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
     
-        // Invalidate the token
+    
         TokenManager.invalidateToken(token);
     
         return ResponseEntity.ok("Logged out successfully");

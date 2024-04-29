@@ -21,7 +21,7 @@
         <div class="split left">
             <h2>Your Cart</h2>
             <section class="book-grid" id="book-grid">
-                <!-- Books will be loaded here by JavaScript -->
+            
             </section>
             <div id="cart-total-display" style="color: red; font-weight: bold;">Total: </div>
         </div>
@@ -46,7 +46,7 @@
         </div>
     </div>
     <script>
-    //var bookIdsInCart = []; 
+
 
      $(document).ready(function() {
         fetchBooksInCart();
@@ -69,7 +69,7 @@
             headers: { 'Authorization': authToken },
             success: function(response) {
                 var cartTotal = response.total || response; 
-                $('#cart-total-display').html('Total: $' + cartTotal); 
+                $('#cart-total-display').html('Total(+5¢ processing fee): $' + cartTotal); 
         },
             error: function(xhr) {
                 alert('Failed to retrieve cart total: ' + xhr.responseText);
@@ -147,22 +147,22 @@ async function getInCart() {
 
         const books = await response.json();
         console.log(books);
-        return books;  // This returns the list of books
+        return books; 
     } catch (error) {
         console.error('Error fetching books data:', error);
-        return []; // Returns an empty list in case of error
+        return []; 
     }
 }
 
 
 async function handleCheckout() {
-    var booksInCart = await getInCart(); // Fetch the books in the cart
-    var bookIds = booksInCart.map(book => book.book_id); // Extract just the book IDs from the books
+    var booksInCart = await getInCart(); 
+    var bookIds = booksInCart.map(book => book.book_id); 
     
     var checkoutData = {
         "cart_id": parseInt(sessionStorage.getItem('cart_id')),
         "mem_id": sessionStorage.getItem('mem_id'),
-        "book_list": bookIds, // Send the list of book IDs
+        "book_list": bookIds, 
         "card_holder": $('#card-name').val(),
         "credit_card": $('#card-number').val(),
         "card_name": $('#card-name').val(),
@@ -170,8 +170,7 @@ async function handleCheckout() {
         "csv": $('#cvv').val()
     };
 
-    console.log("Attempting to checkout with data:", JSON.stringify(checkoutData));  // Log the exact JSON being sent
-
+    console.log("Attempting to checkout with data:", JSON.stringify(checkoutData)); 
 
     $.ajax({
         url: 'http://localhost:8080/api/buy',
@@ -181,10 +180,9 @@ async function handleCheckout() {
         success: function(response) {
             console.log("Checkout successful:", response);
             alert('Purchase complete! Confirmation code: ' + response.conf_code);
-            // After successful purchase, clear the current cart data
-            
+           
             clearPaymentInformation();
-            // Then, create a new cart for the user
+            
             
             createNewCartAfterPurchase(checkoutData.mem_id);
         },
@@ -196,12 +194,9 @@ async function handleCheckout() {
     });
 
 
-
-
-
 }
 function clearPaymentInformation() {
-    // Clear the payment input fields
+
     $('#card-number').val('');
     $('#cvv').val('');
     $('#expiration-date').val('');
@@ -219,8 +214,8 @@ function createNewCartAfterPurchase(memberId) {
         success: function(cartResponse) {
             console.log('New cart created:', cartResponse);
             sessionStorage.setItem('cart_id', cartResponse.cart_id);
-            $('#book-grid').empty(); // Clear the current book grid
-            $('#cart-total-display').html('Total: $0'); // Reset the total display
+            $('#book-grid').empty(); 
+            $('#cart-total-display').html('Total (+ 5 cent processing fee): $0');
         },
         error: function(xhr) {
             console.error("Failed to create a new cart:", xhr.responseText);
@@ -231,10 +226,7 @@ function createNewCartAfterPurchase(memberId) {
 
 }
 
-       
-
-
-        
+    
     </script>
 </body>
 </html>

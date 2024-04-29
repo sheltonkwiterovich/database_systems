@@ -19,8 +19,7 @@
         <div class="about-you">
             <h2>About You:</h2>
             <form id="userForm">
-                <input type="text" id="firstName" placeholder="Your First Name">
-                <input type="text" id="lastName" placeholder="Your Last Name">
+                <input type="text" id="Name" placeholder="Your Name">
                 <input type="text" id="dob" placeholder="Your DOB">
                 <input type="tel" id="phoneNumber" placeholder="Your Phone Number">
                 <input type="email" id="email" placeholder="Your Email">
@@ -29,15 +28,21 @@
 
         <div class="past-reads">
             <h2>Past Reads:</h2>
-            <!-- Dynamically populated list of past-read books -->
+          
         </div>
+       
+         <div class="personal-ratings">
+            <h2>Personal Ratings:</h2>
+          
+            </div>
     </section>
     
     <script>
+        
         function fetchUserData() {
             const token = sessionStorage.getItem('authToken');
             if (!token) {
-                // Redirect to login page if no token is found
+               
                 window.location.href = '/login1.html';
                 return;
             }
@@ -45,29 +50,27 @@
             fetch('http://localhost:8080/api/member/view', {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + token // Include the JWT in the Authorization header
+                    'Authorization': 'Bearer ' + token 
                 }
             })
             .then(response => {
                 if (!response.ok) {
-                    // If the response is not ok, throw an error to be caught by the catch block
+                   
                     throw new Error('Network response was not ok: ' + response.statusText);
                 }
                 return response.json();
             })
             .then(data => {
-                // Assuming your backend sends the user data as a JSON object with these properties
-                fetchUserBooks();
-                document.getElementById('firstName').value = data.name || '';
-                document.getElementById('lastName').value = data.name || '';
+           
+                document.getElementById('Name').value = data.name || '';
                 document.getElementById('dob').value = data.date_of_birth || '';
                 document.getElementById('phoneNumber').value = data.phone_num || '';
                 document.getElementById('email').value = data.email || '';
-                fetchUserBooks(token); // Fetch the books after the user data is loaded
+                fetchUserBooks(token);
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
-                // If there's an error (like invalid token), redirect to the login page
+            
                 window.location.href = '/login1';
             });
         }
@@ -76,14 +79,13 @@
     const token = sessionStorage.getItem('authToken');
     const mem_id = sessionStorage.getItem('mem_id');
 
-    console.log('fetchUserBooks called'); // Debug statement
 
     if (!token || !mem_id) {
         console.error('Token or member ID missing in session storage.');
         return;
     }
 
-    console.log(`Attempting to fetch books with mem_id: ${mem_id}`); // Debug statement
+    console.log(`Attempting to fetch books with mem_id: ${mem_id}`); 
 
     fetch(`http://localhost:8080/api/member/booksBought?mem_id=${encodeURIComponent(mem_id)}`, {
         method: 'GET',
@@ -92,7 +94,7 @@
         }
     })
     .then(response => {
-        console.log('Response received'); // Debug statement
+        console.log('Response received'); 
         if (!response.ok) {
             console.error('Response not OK, status:', response.status);
             throw new Error('Network response was not ok: ' + response.statusText);
@@ -100,25 +102,30 @@
         return response.json();
     })
     .then(books => {
-        console.log('Books received:', books); // Debug statement
+        console.log('Books received:', books); 
 
         const pastReadsContainer = document.querySelector('.past-reads');
-        pastReadsContainer.innerHTML = '<h2>Past Reads:</h2>'; // Reset the inner HTML
+        pastReadsContainer.innerHTML = '<h2>Past Reads:</h2>'; 
 
         if (Array.isArray(books) && books.length > 0) {
             books.forEach(book => {
+                 createPersonalRating(0, book.book_id);
+                 fetchAndDisplayAllRatings();
+
                 const bookElement = document.createElement('div');
     bookElement.classList.add('book');
     bookElement.setAttribute('data-book-id', book.book_id); 
     bookElement.innerHTML = `
         <h3>${book.book_name}</h3>
+        
         <p>Author: ${book.book_author}</p>
+        <p>Book #: ${book.book_id}</p>
         <p>Narrator: ${book.book_narrator}</p>
         <p>Categories: ${book.categories}</p>
         <p>Rating: ${book.rating}</p>
         <p>Price: $${book.price.toFixed(2)}</p>
         <p>Listening Time: ${book.listening_time} minutes</p>
-        <select onchange="updatePersonalRating(this.value, ${book.book_id})">
+        <select onchange="updateRating(this.value, ${book.book_id})">
             <option value="">Select your rating</option>
             <option value="1">1 - Bad</option>
             <option value="2">2 - Meh</option>
@@ -129,25 +136,20 @@
         <div class="personal-rating"></div>
     `;
                 pastReadsContainer.appendChild(bookElement);
+                fetchAndDisplayAllRatings();
             });
         } else {
-            console.log('No books or non-array data received'); // Debug statement
+            console.log('No books received');
         }
     })
     .catch(error => {
-        console.error('Error fetching past reads:', error); // Debug statement
+        console.error('Error fetch:', error); 
     });
 }
 
-function updatePersonalRating(rating, bookId) {
-    if (!rating) return; // Don't do anything if the rating is not selected
-    const ratingElement = document.querySelector(`.book[data-book-id="${bookId}"] .personal-rating`);
+function createPersonalRating(rating, bookId) {
 
-    if (ratingElement) {
-        ratingElement.innerHTML = `<span style="color: red;">Your Rating: ${rating}</span>`;
-    } else {
-        console.error('No personal rating element found for bookId:', bookId);
-    }
+  
     const token = sessionStorage.getItem('authToken');
     const memId = sessionStorage.getItem('mem_id');
     const payload = {
@@ -162,11 +164,12 @@ function updatePersonalRating(rating, bookId) {
         'Content-Type': 'application/json',
         'Authorization': token 
     },
-    body: JSON.stringify(payload) // Assuming payload is correctly structured
+    body: JSON.stringify(payload) 
 })
 
 .then(response => {
-        console.log('Received response:', response); // Log the raw response object
+        console.log('Received response:', response); 
+        
         const contentType = response.headers.get("content-type");
         if (!response.ok) {
             if (contentType && contentType.includes("application/json")) {
@@ -178,23 +181,107 @@ function updatePersonalRating(rating, bookId) {
         return contentType && contentType.includes("application/json") ? response.json() : response.text();
     })
     .then(data => {
-        console.log('Rating submitted successfully:', data); // Log successful data or text response
+        fetchAndDisplayAllRatings();
+        console.log('Rating submitted successfully:', data); 
        
 
         
     })
     .catch(error => {
-        // Handle any other errors
-        console.error('Error updating personal rating:', error);
+       
+        console.error('Error:', error);
     });
 }
+
+
+function fetchAndDisplayAllRatings() {
+            const token = sessionStorage.getItem('authToken');
+            const memId = sessionStorage.getItem('mem_id');
+            const url = new URL(`http://localhost:8080/api/ratings/member`);
+            url.searchParams.append('mem_id', memId);
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization':  token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error fetching ratings');
+                }
+                return response.json();
+            })
+            .then(ratings => {
+                const personalRatingsContainer = document.querySelector('.personal-ratings');
+                personalRatingsContainer.innerHTML = '<h2>Personal Ratings:</h2>';
+
+                ratings.forEach(rating => {
+                    const ratingElement = document.createElement('div');
+                    ratingElement.classList.add('rating');
+                    ratingElement.innerHTML = `
+                        <p>Book Title: ${rating.book_id}</p>
+                        <p>Your Rating: ${rating.rate}</p>
+                    `;
+                    personalRatingsContainer.appendChild(ratingElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching and displaying ratings:', error);
+            });
+        }
+
+        function updateRating(rating, bookId) {
+    const token = sessionStorage.getItem('authToken');
+    const memId = sessionStorage.getItem('mem_id');
+   
+    const parsedRating = rating === "N/A" ? 0 : parseInt(rating);
+    const existingRatingElement = document.querySelector(`.book[data-book-id="${bookId}"] .personal-rating`);
+            
+          
+
+  
+    const payload = {
+        mem_id: memId,
+        book_id: bookId,
+        rate: parsedRating
+    };
+
+    fetch('http://localhost:8080/api/ratings/update', {
+        method: 'PUT',
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(data => {
+   
+        fetchAndDisplayAllRatings();
+        console.log(data);
+   
+       
+    })
+    .catch(error => {
+
+        console.error('Error updating rating:', error);
+    });
+}
+
+
         function logout() {
     if (confirm('Are you sure you want to log out?')) {
         const token = sessionStorage.getItem('authToken');
 
         if (token) {
             fetch('http://localhost:8080/api/member/logout', {
-                method: 'POST', // Logout might be implemented as a POST request
+                method: 'POST', 
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
@@ -211,15 +298,15 @@ function updatePersonalRating(rating, bookId) {
             });
         }
 
-        // Remove the JWT from sessionStorage regardless of whether the server invalidation was successful
         sessionStorage.removeItem('authToken');
-        // Redirect to the home page or login page
+
         window.location.href = '/';
     }
 }
 
-        // Call fetchUserData on page load
         window.addEventListener('load', fetchUserData);
+      
+        
     </script>
       
 </body>
